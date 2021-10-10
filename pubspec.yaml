@@ -1,0 +1,41 @@
+name: weddingitinerary
+description: A Wedding Itinerary application.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  google_fonts: ^2.1.0
+  intl: #^0.17.0 #for date time to string formatting
+  flutter_bloc: #^7.1.0 #for blocks designing
+  http: #^0.12.1 #for http communication
+  flutter_appauth: ^1.1.0+2 #for auth0 Oauth authentication
+  shared_preferences: #for storing local data
+  equatable:
+  custom_navigation_bar: ^0.8.2
+  toggle_switch:
+  hexcolor: ^2.0.5
+  mongo_dart:
+  objectid: 2.0.0
+  bloc_concurrency:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^1.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - lib/core/assets/logo_white.png
+    - lib/core/assets/thenextmove.png
+    - lib/core/assets/Automate your home using TNM Devices.png
