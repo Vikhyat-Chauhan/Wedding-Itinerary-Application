@@ -39,3 +39,6 @@ flutter:
     - lib/core/assets/logo_white.png
     - lib/core/assets/thenextmove.png
     - lib/core/assets/Automate your home using TNM Devices.png
+    - lib/core/assets/logo_black.png
+    - lib/core/assets/thenextmove_black.png
+    - lib/core/assets/Automate your home using TNM Devices_black.png

@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:weddingitinerary/presentation/test_screen/widgets/events_card.dart';
+import 'package:weddingitinerary/presentation/test_screen/widgets/events_card_row.dart';
 import 'package:weddingitinerary/presentation/test_screen/widgets/top_bar.dart';
 
 class TestScreen extends StatefulWidget {
@@ -21,11 +23,13 @@ class _TestScreenState extends State<TestScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 50, 10, 0),
+        padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
         child: Column(
-          children: [
+          children: const [
             Top_Bar(),
-            const SizedBox(height: 20),
+            SizedBox(height: 40),
+            Events_Card_Row(),
+            /*
             Center(
               child: ElevatedButton(
                   child: const Text(
@@ -44,24 +48,8 @@ class _TestScreenState extends State<TestScreen> {
                             side: BorderSide(color: Colors.transparent))),
                   ),
                   onPressed: () async {}),
-            ),
-            const SizedBox(height: 24),
-            Card(
-              color: Palette.kToDark,
-              child: InkWell(
-                onTap: () {
-                  print('Card tapped.');
-                },
-                child: const SizedBox(
-                  width: 100,
-                  height: 130,
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text('A card that can be tapped', style: TextStyle(color: Colors.white),),
-                  ),
-                ),
-              ),
-            )
+            ), */
+            SizedBox(height: 24),
           ],
         ),
       ),
@@ -82,7 +70,7 @@ class _TestScreenState extends State<TestScreen> {
             icon: Icon(Icons.wc),
           ),
           BottomNavigationBarItem(
-            label: 'Places',
+            label: 'Bookings',
             icon: Icon(Icons.location_on),
           ),
           BottomNavigationBarItem(

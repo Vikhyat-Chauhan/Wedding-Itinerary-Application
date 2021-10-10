@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/user_bloc/user_bloc.dart';
-import 'package:weddingitinerary/logic/cubit/authentication_cubit.dart';
 import 'package:weddingitinerary/presentation/router/app_router.dart';
 import 'package:weddingitinerary/core/themes/app_theme.dart';
 
@@ -27,10 +26,14 @@ class weddingitinerary extends StatelessWidget {
           lazy: false,
         ),
         BlocProvider(
-          create: (BuildContext context) => UserBloc(BlocProvider.of<MongodbBloc>(context)),
+          create: (BuildContext context) =>
+              UserBloc(BlocProvider.of<MongodbBloc>(context)),
         ),
         BlocProvider(
-          create: (BuildContext context) => AuthenticationBloc(BlocProvider.of<UserBloc>(context), BlocProvider.of<MongodbBloc>(context))..add(Login()),
+          create: (BuildContext context) => AuthenticationBloc(
+              BlocProvider.of<UserBloc>(context),
+              BlocProvider.of<MongodbBloc>(context))
+            ..add(Login()),
         ),
       ],
       child: MaterialApp(
@@ -42,4 +45,3 @@ class weddingitinerary extends StatelessWidget {
     );
   }
 }
-
