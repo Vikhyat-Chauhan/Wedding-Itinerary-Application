@@ -6,12 +6,12 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
-import 'package:weddingitinerary/logic/bloc/event_bloc/event_bloc.dart';
 import 'package:weddingitinerary/logic/cubit/authentication_cubit.dart';
 import 'package:weddingitinerary/presentation/test_screen/widgets/events_card.dart';
+import 'package:weddingitinerary/presentation/test_screen/widgets/shortcuts_card.dart';
 
-class Events_Card_Row extends StatelessWidget {
-  const Events_Card_Row({Key? key}) : super(key: key);
+class Shortcut_Card_Row extends StatelessWidget {
+  const Shortcut_Card_Row({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,9 +22,9 @@ class Events_Card_Row extends StatelessWidget {
             alignment: AlignmentDirectional.topStart,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
-                  "Events",
+                  "Shortcuts",
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
@@ -34,19 +34,16 @@ class Events_Card_Row extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          BlocBuilder<EventBloc,EventBlocState>(
-            builder: (context, state) {
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    for (int i=0; i<state.events.length; i++)
-                      Events_Card(location: state.events[i].location, name: state.events[i].name, imageiurl: state.events[i].image, date: '20th', time: '09:30 PM', scroll: (state.events[i].name.length>15)? true:false,),
-                  ],
-                ),
-              );
-            }
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Shortcuts_Card(iconData: Icons.hotel, title :'Hotel'),
+                Shortcuts_Card(iconData: Icons.add_a_photo, title :'Upload'),
+                Shortcuts_Card(iconData: Icons.contact_support, title :'Support'),
+              ],
+            ),
           ),
         ],
       ),

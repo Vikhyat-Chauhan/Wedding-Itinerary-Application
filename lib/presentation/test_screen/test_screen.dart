@@ -5,6 +5,7 @@ import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/presentation/test_screen/widgets/events_card.dart';
 import 'package:weddingitinerary/presentation/test_screen/widgets/events_card_row.dart';
+import 'package:weddingitinerary/presentation/test_screen/widgets/shortcuts_card_row.dart';
 import 'package:weddingitinerary/presentation/test_screen/widgets/top_bar.dart';
 
 class TestScreen extends StatefulWidget {
@@ -27,6 +28,8 @@ class _TestScreenState extends State<TestScreen> {
         child: Column(
           children: const [
             Top_Bar(),
+            SizedBox(height: 40),
+            Shortcut_Card_Row(),
             SizedBox(height: 40),
             Events_Card_Row(),
             /*

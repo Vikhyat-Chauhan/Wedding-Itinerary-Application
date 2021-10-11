@@ -19,13 +19,13 @@ part 'authentication_bloc_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationBlocEvent, AuthenticationBlocState> {
-  final UserBloc userBloc;
   final MongodbBloc mongodbBloc;
   final FlutterAppAuth appAuth = FlutterAppAuth();
 
   late final StreamSubscription UserBlocSubscription;
   late final StreamSubscription MongoDBSubscription;
-  AuthenticationBloc(this.userBloc, this.mongodbBloc)
+
+  AuthenticationBloc(this.mongodbBloc)
       : super(const AuthenticationBlocState()) {
     on<AuthenticationBlocEvent>(_authenticationEventHandler,
         transformer: droppable());
@@ -90,7 +90,7 @@ class AuthenticationBloc
     bool working = false;
     if (mongodbBloc.state.status == MongodbStatus.initial) {
       working = false;
-    } else if (mongodbBloc.state.status == MongodbStatus.connecting) {
+    } else if (mongodbBloc.state.status == MongodbStatus.working) {
       working = false;
     } else if (mongodbBloc.state.status == MongodbStatus.disconnected) {
       working = false;

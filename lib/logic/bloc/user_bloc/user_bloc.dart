@@ -147,7 +147,7 @@ class UserBloc extends Bloc<UserBlocEvent, UserBlocState> {
     bool working = false;
     if (MongoDbBloc.state.status == MongodbStatus.initial) {
       working = false;
-    } else if (MongoDbBloc.state.status == MongodbStatus.connecting) {
+    } else if (MongoDbBloc.state.status == MongodbStatus.working) {
       working = false;
     } else if (MongoDbBloc.state.status == MongodbStatus.disconnected) {
       working = false;

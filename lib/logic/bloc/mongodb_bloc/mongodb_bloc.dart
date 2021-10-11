@@ -24,7 +24,7 @@ class MongodbBloc extends Bloc<MongodbBlocEvent, MongodbBlocState> {
     if (event is Connect) { print("Connect event");
       if (state.status != MongodbStatus.connected) {
         try {
-          emit(state.copyWith(status: MongodbStatus.connecting));
+          emit(state.copyWith(status: MongodbStatus.working));
           await MongoDatabase.connect();
           emit(state.copyWith(status: MongodbStatus.connected));
         } catch (_) {
@@ -37,7 +37,6 @@ class MongodbBloc extends Bloc<MongodbBlocEvent, MongodbBlocState> {
     if (event is Disconnect) {
       if (state.status != MongodbStatus.disconnected) {
         try {
-          emit(state.copyWith(status: MongodbStatus.disconnecting));
           await MongoDatabase.disconnect();
           emit(state.copyWith(status: MongodbStatus.disconnected));
         } catch (_) {

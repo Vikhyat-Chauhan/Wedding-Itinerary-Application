@@ -1,6 +1,6 @@
 part of 'mongodb_bloc.dart';
 
-enum MongodbStatus{initial, connected, disconnected, connecting, disconnecting, serviceunavailable, working, undefined}
+enum MongodbStatus{initial, connected, disconnected, serviceunavailable, working, undefined}
 
 class MongodbBlocState extends Equatable {
   const MongodbBlocState({

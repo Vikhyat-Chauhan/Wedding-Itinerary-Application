@@ -26,6 +26,7 @@ dependencies:
   mongo_dart:
   objectid: 2.0.0
   bloc_concurrency:
+  marquee:
 
 dev_dependencies:
   flutter_test:
