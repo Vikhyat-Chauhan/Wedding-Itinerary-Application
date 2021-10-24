@@ -10,39 +10,7 @@ class Login_Widget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
       children: <Widget>[
-        const SizedBox(
-          width: 10,
-          height: 200,
-        ),
-        Container(
-          width: 200,
-          height: 80,
-          decoration: const BoxDecoration(
-            shape: BoxShape.rectangle,
-            image: DecorationImage(
-              fit: BoxFit.fitHeight,
-              image: AssetImage('lib/core/assets/logo_black.png'),
-            ),
-          ),
-        ),
-        Container(
-          width: 250,
-          height: 70,
-          decoration: const BoxDecoration(
-            shape: BoxShape.rectangle,
-            image: DecorationImage(
-              fit: BoxFit.fitWidth,
-              image: AssetImage('lib/core/assets/thenextmove_black.png'),
-            ),
-          ),
-        ),
-        const SizedBox(
-          width: 10,
-          height: 70,
-        ),
         ElevatedButton(
           child: const Text(" Get Started ",
               style: TextStyle(fontSize: 14, fontFamily: 'Raleway')),
@@ -57,22 +25,6 @@ class Login_Widget extends StatelessWidget {
             BlocProvider.of<AuthenticationBloc>(context).add(Login());
           },
         ),
-        const SizedBox(
-          width: 10,
-          height: 200,
-        ),
-        Container(
-          width: 250,
-          height: 60,
-          decoration: const BoxDecoration(
-            shape: BoxShape.rectangle,
-            image: DecorationImage(
-              fit: BoxFit.fitWidth,
-              image: AssetImage(
-                  'lib/core/assets/Automate your home using TNM Devices_black.png'),
-            ),
-          ),
-        )
       ],
     );
   }

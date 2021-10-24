@@ -7,6 +7,7 @@ import 'package:weddingitinerary/presentation/router/app_router.dart';
 import 'package:weddingitinerary/core/themes/app_theme.dart';
 
 import 'logic/bloc/event_bloc/event_bloc.dart';
+import 'logic/bloc/images_bloc/images_bloc.dart';
 import 'logic/bloc/mongodb_bloc/mongodb_bloc.dart';
 import 'logic/debug/app_bloc_observer.dart';
 
@@ -37,11 +38,16 @@ class weddingitinerary extends StatelessWidget {
               EventBloc(BlocProvider.of<MongodbBloc>(context),BlocProvider.of<AuthenticationBloc>(context)),
           lazy: false,
         ),
+        BlocProvider(
+          create: (BuildContext context) =>
+              ImagesBloc()..add(ImageBlocInitial()),
+          lazy: false,
+        ),
       ],
       child: MaterialApp(
         title: "Wedding Itinerary Application",
         debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
+        theme: AppTheme.darkTheme,
         onGenerateRoute: _appRouter.onGenerateRoute,
       ),
     );

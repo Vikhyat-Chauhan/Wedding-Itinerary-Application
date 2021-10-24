@@ -3,19 +3,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/logic/cubit/authentication_cubit.dart';
 import 'package:marquee/marquee.dart';
 
-class Events_Card extends StatelessWidget {
+class Events_Card_Wide extends StatelessWidget {
   final String name;
-  final String date;
-  final String time;
+  final String timestamp;
   final String location;
   final String imageiurl;
   final bool scroll;
-  const Events_Card({Key? key, required this.name, required this.date, required this.time, required this.location, required this.imageiurl, required this.scroll}) : super(key: key);
+  const Events_Card_Wide({Key? key, required this.name, required this.timestamp, required this.location, required this.imageiurl, required this.scroll}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -30,8 +31,7 @@ class Events_Card extends StatelessWidget {
             print('Card tapped.');
           },
           child: SizedBox(
-            width: 250,
-            height: 265,
+            height: 283,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -41,7 +41,7 @@ class Events_Card extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8.0),
                       child: Image.network(
                         imageiurl,
-                        height: 160.0,
+                        height: 180.0,
                         fit: BoxFit.fill,
                       ),
                     ),
@@ -65,7 +65,7 @@ class Events_Card extends StatelessWidget {
                               ),
                               SizedBox(height: 7),
                               Text(
-                                time + ' on ' + date,
+                                returntime(timestamp) + ' on ' + returnDay(timestamp),
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.normal,
@@ -73,7 +73,7 @@ class Events_Card extends StatelessWidget {
                               ),
                               SizedBox(height: 7),
                               SizedBox(
-                                width: 170,
+                                width: 260,
                                 height: 20,
                                 child: scroll? Marquee(
                                   text: location,
@@ -96,7 +96,7 @@ class Events_Card extends StatelessWidget {
                         ),
                       ),
                       Icon(
-                        Icons.access_time,
+                        Icons.location_on,
                         color: Palette.kToDark,
                         size: 50,
                       ),
@@ -109,5 +109,17 @@ class Events_Card extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String returnDay(String timestamp){
+    var dt = DateTime.fromMillisecondsSinceEpoch(int.parse(timestamp),isUtc: false);
+    var day = DateFormat('d MMM').format(dt); // 12/31/2000, 10:00 PM
+    return day;
+  }
+
+  String returntime(String timestamp){
+    var dt = DateTime.fromMillisecondsSinceEpoch(int.parse(timestamp),isUtc: false);
+    var day = DateFormat('hh:mm a').format(dt); // 12/31/2000, 10:00 PM
+    return day;
   }
 }

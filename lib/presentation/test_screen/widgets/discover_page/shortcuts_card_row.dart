@@ -7,8 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/logic/cubit/authentication_cubit.dart';
-import 'package:weddingitinerary/presentation/test_screen/widgets/events_card.dart';
-import 'package:weddingitinerary/presentation/test_screen/widgets/shortcuts_card.dart';
+import 'package:weddingitinerary/presentation/test_screen/widgets/events_page/events_card.dart';
+import 'package:weddingitinerary/presentation/test_screen/widgets/discover_page/shortcuts_card.dart';
 
 class Shortcut_Card_Row extends StatelessWidget {
   const Shortcut_Card_Row({Key? key}) : super(key: key);
@@ -26,14 +26,14 @@ class Shortcut_Card_Row extends StatelessWidget {
                 Text(
                   "Shortcuts",
                   style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Arial'),
+                      fontSize: 28,
+                      fontWeight: FontWeight.w300,
+                      fontFamily: 'Arial narrow'),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 15),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(

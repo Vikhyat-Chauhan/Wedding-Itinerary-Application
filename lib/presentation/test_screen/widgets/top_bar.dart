@@ -2,12 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weddingitinerary/core/constants/strings.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/logic/cubit/authentication_cubit.dart';
 
 class Top_Bar extends StatelessWidget {
-  const Top_Bar({Key? key}) : super(key: key);
+  Top_Bar({Key? key, required this.pagename,}) : super(key: key);
+
+  String pagename = '';
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -20,16 +24,16 @@ class Top_Bar extends StatelessWidget {
               alignment: AlignmentDirectional.topStart,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
-                    "Discover",
-                    style: TextStyle(
+                    pagename,
+                    style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w200,
                         fontFamily: 'Arial narrow'),
                   ),
                   Text(
-                    "Wedding Itinerary",
+                    Strings.highlight,
                     style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.w400,

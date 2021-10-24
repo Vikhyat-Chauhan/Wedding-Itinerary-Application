@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
+import 'package:weddingitinerary/data/models/event/event.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/event_bloc/event_bloc.dart';
 import 'package:weddingitinerary/logic/cubit/authentication_cubit.dart';
-import 'package:weddingitinerary/presentation/test_screen/widgets/events_card.dart';
+import 'package:weddingitinerary/presentation/test_screen/widgets/events_page/events_card.dart';
 
 class Events_Card_Row extends StatelessWidget {
   const Events_Card_Row({Key? key}) : super(key: key);
@@ -24,16 +25,16 @@ class Events_Card_Row extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
                 Text(
-                  "Events",
+                  "Upcoming",
                   style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Arial'),
+                      fontSize: 28,
+                      fontWeight: FontWeight.w300,
+                      fontFamily: 'Arial narrow'),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           BlocBuilder<EventBloc,EventBlocState>(
             builder: (context, state) {
               return SingleChildScrollView(
@@ -42,7 +43,7 @@ class Events_Card_Row extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     for (int i=0; i<state.events.length; i++)
-                      Events_Card(location: state.events[i].location, name: state.events[i].name, imageiurl: state.events[i].image, date: '20th', time: '09:30 PM', scroll: (state.events[i].name.length>15)? true:false,),
+                      if((DateTime.now().millisecondsSinceEpoch) < int.parse(state.events[i].timestamp)) Events_Card(location: state.events[i].location, name: state.events[i].name, imageiurl: state.events[i].image, timestamp: state.events[i].timestamp, scroll: (state.events[i].name.length>15)? true:false,),
                   ],
                 ),
               );

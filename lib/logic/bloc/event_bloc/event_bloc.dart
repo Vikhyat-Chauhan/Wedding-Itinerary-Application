@@ -4,6 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:weddingitinerary/core/constants/strings.dart';
 import 'package:weddingitinerary/data/repositories/mongodb/mongodb_crud.dart';
 import 'package:mongo_dart/mongo_dart.dart' as M;
 import 'package:weddingitinerary/data/models/event/event.dart';
@@ -35,8 +37,8 @@ class EventBloc extends Bloc<EventBlocEvent, EventBlocState> {
       //EventRefresh Event
       if (event is EventRefresh) {
         try {
-          print(authBloc.state.profile);
-          List<Event> onlineevents = await EventCrud.getmanybykey({"userid":authBloc.state.profile["sub"]});
+          List<Event> onlineevents = await EventCrud.getmanybykey({"userid":Strings.ADMIN_USERID});
+          onlineevents.sort((a, b) => a.timestamp.compareTo(b.timestamp));
           emit(state.copyWith(
               status: EventStatus.normal, events: onlineevents));
         } catch (_) {

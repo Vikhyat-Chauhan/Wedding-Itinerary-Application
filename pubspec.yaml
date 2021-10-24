@@ -27,6 +27,15 @@ dependencies:
   objectid: 2.0.0
   bloc_concurrency:
   marquee:
+  salomon_bottom_bar: ^3.1.0
+  gcloud:
+  googleapis_auth:
+  image_picker:
+  mime:
+  path_provider:
+  image:
+  back_button_interceptor:
+  carousel_slider:
 
 dev_dependencies:
   flutter_test:
@@ -37,9 +46,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - lib/core/assets/logo_white.png
-    - lib/core/assets/thenextmove.png
-    - lib/core/assets/Automate your home using TNM Devices.png
-    - lib/core/assets/logo_black.png
-    - lib/core/assets/thenextmove_black.png
-    - lib/core/assets/Automate your home using TNM Devices_black.png
+    - lib/core/constants/credentials.json
+    - lib/core/assets/images/background_image_1.jpeg
+    - lib/core/assets/images/background_image_2.jpeg
+    - lib/core/assets/images/Durgesh_Weds_Ritika.png
