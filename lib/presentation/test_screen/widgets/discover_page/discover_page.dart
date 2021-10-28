@@ -14,7 +14,7 @@ class Discover_Page extends StatelessWidget {
         Top_Bar(pagename: 'Discover',),
         SizedBox(height: 40),
         Shortcut_Card_Row(),
-        SizedBox(height: 20),
+        SizedBox(height: 40),
         Events_Card_Row(),
         SizedBox(height: 24),
         /*

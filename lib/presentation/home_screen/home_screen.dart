@@ -4,14 +4,16 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:weddingitinerary/data/models/user/user.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:weddingitinerary/logic/bloc/bookings_bloc/bookings_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/event_bloc/event_bloc.dart';
+import 'package:weddingitinerary/logic/bloc/locations_bloc/locations_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/mongodb_bloc/mongodb_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/user_bloc/user_bloc.dart';
 import 'package:weddingitinerary/logic/cubit/authentication_cubit.dart';
 import 'package:mongo_dart/mongo_dart.dart' as M;
-import 'widgets/login_widget.dart';
 import 'widgets/profile_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -27,14 +29,17 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<String> imgList = [
     'lib/core/assets/images/background_image_1.jpeg',
     'lib/core/assets/images/background_image_2.jpeg',
+    'lib/core/assets/images/background_image_3.jpeg',
+    'lib/core/assets/images/background_image_4.jpeg',
+    'lib/core/assets/images/background_image_6.jpeg',
+    'lib/core/assets/images/background_image_7.jpeg',
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Stack(
-            alignment: Alignment.center,
+      body: BlocConsumer<AuthenticationBloc,AuthenticationBlocState>(
+        builder: (context,state) {
+          return Stack(
             children: <Widget>[
               CarouselSlider(
                 options: CarouselOptions(
@@ -72,44 +77,51 @@ class _HomeScreenState extends State<HomeScreen> {
                   )),
                 ),
               ),
-            ],
-          ),
-          Center(
-            child: BlocConsumer<AuthenticationBloc, AuthenticationBlocState>(
-              builder: (context, state) {
-                if (state.status == AuthenticationStatus.unauthenticated) {
-                  return const Login_Widget();
-                } else {
-                  return CircularProgressIndicator();
-                }
-              },
-              listener: (context, state) {
-                if (state.status == AuthenticationStatus.authenticated) {
-                  User user = userFromMap(state.profile);
-                  Navigator.pushNamed(context, '/test');
-                }
-              },
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Stack(
-              children: [
-                Container(
+              Container(
                 alignment: Alignment.bottomCenter,
-                height: 172,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  image: DecorationImage(
-                    fit: BoxFit.fitWidth,
-                    image:
-                    AssetImage('lib/core/assets/images/Durgesh_Weds_Ritika.png'),
+                child: Container(
+                  alignment: Alignment.lerp(
+                      Alignment.bottomCenter, Alignment.center, 0.23),
+                  height: 191,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    image: DecorationImage(
+                      fit: BoxFit.fitWidth,
+                      image: AssetImage(
+                          'lib/core/assets/images/Durgesh_Weds_Ritika.png'),
+                    ),
+                  ),
+                  child: Container(
+                    child: (state.status == AuthenticationStatus.unauthenticated)? ElevatedButton(
+                      child: const Text(" Get Started ",
+                          style: TextStyle(fontSize: 14, fontFamily: 'Playfair Display')),
+                      style: ButtonStyle(
+                          foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.black),
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(HexColor("#ebce87")),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
+                                  side: BorderSide(color: Colors.transparent)))),
+                      onPressed: () async {
+                        BlocProvider.of<AuthenticationBloc>(context).add(Login());
+                      },
+                    ): null,
                   ),
                 ),
-              ),]
-            ),
-          ),
-        ],
+              ),
+              if(state.status == AuthenticationStatus.working)
+                Center(child: CircularProgressIndicator()),
+            ],
+          );
+        },
+        listener: (context, state) {
+          if (state.status == AuthenticationStatus.authenticated) {
+            Navigator.pushNamed(context, '/test');
+          }
+        },
       ),
     );
   }
@@ -122,13 +134,25 @@ class _HomeScreenState extends State<HomeScreen> {
       if ((state != MongodbStatus.connected) &
           (state != MongodbStatus.initial) &
           (state != MongodbStatus.working)) {
-        //BlocProvider.of<MongodbBloc>(context).add(Connect());
+        BlocProvider.of<MongodbBloc>(context).add(Connect());
       }
     });
     Timer.periodic(thirtySec, (Timer t) {
       var state = BlocProvider.of<EventBloc>(context).state.status;
       if ((state == EventStatus.normal)) {
-        //BlocProvider.of<EventBloc>(context).add(EventRefresh());
+        BlocProvider.of<EventBloc>(context).add(EventRefresh());
+      }
+    });
+    Timer.periodic(thirtySec, (Timer t) {
+      var state = BlocProvider.of<BookingsBloc>(context).state.status;
+      if ((state == BookingsStatus.normal)) {
+        BlocProvider.of<BookingsBloc>(context).add(BookingsRefresh());
+      }
+    });
+    Timer.periodic(thirtySec, (Timer t) {
+      var state = BlocProvider.of<LocationsBloc>(context).state.status;
+      if ((state == LocationsStatus.normal)) {
+        BlocProvider.of<LocationsBloc>(context).add(LocationsRefresh());
       }
     });
     //Timer.periodic(thirtySec, (Timer t) => BlocProvider.of<AuthenticationCubit>(context).add(UserRefresh()));

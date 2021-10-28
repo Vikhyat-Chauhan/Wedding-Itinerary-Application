@@ -43,10 +43,14 @@ class AuthenticationBloc
       //Login EVENT
       if (event is Login) {
         if (state.status != AuthenticationStatus.authenticated) {
-          try { print("Login action");
+          try {
+            print("Login action");
             await _loginAction();
           } catch (_) {
-            print(_);
+            print(" Login Failed");
+            emit(state.copyWith(
+              status: AuthenticationStatus.unauthenticated,
+            ));
           }
         }
       }
@@ -146,40 +150,35 @@ class AuthenticationBloc
   }
 
   Future<void> _loginAction() async {
-    try {
-      final AuthorizationTokenResponse? result =
-          await appAuth.authorizeAndExchangeCode(
-        AuthorizationTokenRequest(
-          Strings.AUTH0_CLIENT_ID,
-          Strings.AUTH0_REDIRECT_URI,
-          issuer: Strings.AUTH0_DOMAIN,
-          scopes: <String>['openid', 'profile', 'offline_access'],
-        ),
-      );
+    final AuthorizationTokenResponse? result =
+        await appAuth.authorizeAndExchangeCode(
+      AuthorizationTokenRequest(
+        Strings.AUTH0_CLIENT_ID,
+        Strings.AUTH0_REDIRECT_URI,
+        issuer: Strings.AUTH0_DOMAIN,
+        scopes: <String>['openid', 'profile', 'offline_access'],
+      ),
+    );
 
-      final Map<String, dynamic> authorization = {
-        "idToken": result!.idToken,
-        "accessToken": result.accessToken,
-        "refreshToken": result.refreshToken,
-        "tokenType": result.tokenType,
-        "accessTokenExpirationDateTime": result.accessTokenExpirationDateTime
-      };
+    final Map<String, dynamic> authorization = {
+      "idToken": result!.idToken,
+      "accessToken": result.accessToken,
+      "refreshToken": result.refreshToken,
+      "tokenType": result.tokenType,
+      "accessTokenExpirationDateTime": result.accessTokenExpirationDateTime
+    };
 
-      final Map<String, dynamic> profile =
-          await _getUserDetails(result.accessToken);
+    final Map<String, dynamic> profile =
+        await _getUserDetails(result.accessToken);
 
-      await TokenStorage.setToken(result.refreshToken);
+    await TokenStorage.setToken(result.refreshToken);
 
-      emit(state.copyWith(
-          status: AuthenticationStatus.authenticated,
-          profile: profile,
-          authorization: authorization));
-      User user = userFromMap(state.profile);
-      UserCrud.update(user);
-    } on Exception catch (e, s) {
-      print('login error: $e - stack: $s');
-      //emit(Unauthenticated(e.toString()));  emit unauthenticated
-    }
+    emit(state.copyWith(
+        status: AuthenticationStatus.authenticated,
+        profile: profile,
+        authorization: authorization));
+    User user = userFromMap(state.profile);
+    UserCrud.update(user);
   }
 
   Future<void> _logout() async {

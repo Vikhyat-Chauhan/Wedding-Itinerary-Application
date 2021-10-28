@@ -1,8 +1,13 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
+import 'package:weddingitinerary/data/repositories/gcloud/gcloud.dart';
+import 'package:weddingitinerary/logic/bloc/bottomnavbar_bloc/bottomnavbar_bloc.dart';
 import 'package:weddingitinerary/presentation/test_screen/widgets/bookings_page/bookings_page.dart';
 import 'package:weddingitinerary/presentation/test_screen/widgets/discover_page/discover_page.dart';
 import 'package:weddingitinerary/presentation/test_screen/widgets/events_page/events_page.dart';
@@ -11,70 +16,95 @@ import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class TestScreen extends StatefulWidget {
   const TestScreen({Key? key, required this.title}) : super(key: key);
-
   final String title;
 
   @override
   State<TestScreen> createState() => _TestScreenState();
 }
-
+//Added Filter
 class _TestScreenState extends State<TestScreen> {
+  double _sigmaX = 2.0; // from 0-10
+  double _sigmaY = 2.0; // from 0-10
+  double _opacity = 0.6; // from 0-1.0
   bool selected = true;
-  int _currentIndex = 0; //Page Selector
+  int backpress_count = 0;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-        child: (_currentIndex == 0)
-            ? Discover_Page()
-            : ((_currentIndex == 1)
-                ? Events_Page()
-                : ((_currentIndex == 2)
-                    ? Images_Page()
-                    : ((_currentIndex == 3) ? Bookings_Page() : Text('NULL')))),
-      ),
-      bottomNavigationBar: SalomonBottomBar(
-        currentIndex: _currentIndex,
-        onTap: (i) => setState(() => _currentIndex = i),
-        items: [
-          /// Home
-          SalomonBottomBarItem(
-            title: Text("Discover"),
-            icon: Icon(Icons.favorite),
-            selectedColor: Colors.purple,
-            unselectedColor: Colors.white,
+    return BlocBuilder<BottomnavbarBloc, BottomnavbarBlocState>(
+        builder: (context, state) {
+        return Scaffold(
+          body: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("lib/core/assets/images/background_image_2.jpeg"),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: _sigmaX, sigmaY: _sigmaY),
+              child: Container(
+                color: Colors.black.withOpacity(_opacity),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+                  child: (state.pageindex == 0)
+                      ? Discover_Page()
+                      : ((state.pageindex == 1)
+                          ? Events_Page()
+                          : ((state.pageindex == 2)
+                              ? Images_Page()
+                              : ((state.pageindex == 3) ? Bookings_Page() : Text('NULL')))),
+                ),
+              ),
+            ),
           ),
+          bottomNavigationBar: SalomonBottomBar(
+            currentIndex: state.pageindex,
+            onTap: (i) { BlocProvider.of<BottomnavbarBloc>(context)
+                .add(Bottomnavbarsetindex(pageindex: i));},
+            items: [
+              /// Home
+              SalomonBottomBarItem(
+                title: Text("Discover"),
+                icon: Icon(Icons.favorite),
+                selectedColor: Colors.purple,
+                unselectedColor: Colors.white,
+              ),
 
-          /// Likes
-          SalomonBottomBarItem(
-            icon: Icon(Icons.wc),
-            title: Text("Events"),
-            selectedColor: Colors.pink,
-            unselectedColor: Colors.white,
-          ),
+              /// Likes
+              SalomonBottomBarItem(
+                icon: Icon(Icons.wc),
+                title: Text("Events"),
+                selectedColor: Colors.pink,
+                unselectedColor: Colors.white,
+              ),
 
-          /// Profile
-          SalomonBottomBarItem(
-            icon: Icon(Icons.photo_camera),
-            title: Text("Images"),
-            selectedColor: Colors.teal,
-            unselectedColor: Colors.white,
-          ),
+              /// Profile
+              SalomonBottomBarItem(
+                icon: Icon(Icons.photo_camera),
+                title: Text("Images"),
+                selectedColor: Colors.teal,
+                unselectedColor: Colors.white,
+              ),
 
-          /// Search
-          SalomonBottomBarItem(
-            icon: Icon(Icons.location_on),
-            title: Text("Bookings"),
-            selectedColor: Colors.orange,
-            unselectedColor: Colors.white,
+              /// Search
+              SalomonBottomBarItem(
+                icon: Icon(Icons.location_on),
+                title: Text("Bookings"),
+                selectedColor: Colors.orange,
+                unselectedColor: Colors.white,
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      }
     );
   }
 
-  bool backInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+  Future<bool> backInterceptor(bool stopDefaultButtonEvent, RouteInfo info) async {
+    //final GcloudApi gcloud = GcloudApi();
+    //await gcloud.spawnclient().whenComplete(() async {
+    //  await gcloud.returnAllFilename();
+    //});
     //Do nothing here
     return true;
   }
@@ -103,35 +133,3 @@ void initState() {}
 
 @override
 void close() {}
-
-/*
-BottomNavigationBar(
-type: BottomNavigationBarType.fixed,
-currentIndex: _currentIndex,
-onTap: (value) {
-// Respond to item press.
-setState(
-() {
-_currentIndex = value;
-},
-);
-},
-items: const [
-BottomNavigationBarItem(
-label: 'discover_page',
-icon: Icon(Icons.favorite),
-),
-BottomNavigationBarItem(
-label: 'Events',
-icon: Icon(Icons.wc),
-),
-BottomNavigationBarItem(
-label: 'Bookings',
-icon: Icon(Icons.location_on),
-),
-BottomNavigationBarItem(
-label: 'Profile',
-icon: Icon(Icons.account_box),
-),
-],
-)*/

@@ -2,12 +2,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:weddingitinerary/logic/bloc/bottomnavbar_bloc/bottomnavbar_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/user_bloc/user_bloc.dart';
 import 'package:weddingitinerary/presentation/router/app_router.dart';
 import 'package:weddingitinerary/core/themes/app_theme.dart';
 
+import 'logic/bloc/bookings_bloc/bookings_bloc.dart';
 import 'logic/bloc/event_bloc/event_bloc.dart';
 import 'logic/bloc/images_bloc/images_bloc.dart';
+import 'logic/bloc/locations_bloc/locations_bloc.dart';
 import 'logic/bloc/mongodb_bloc/mongodb_bloc.dart';
 import 'logic/debug/app_bloc_observer.dart';
 
@@ -23,6 +26,10 @@ class weddingitinerary extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(
+          create: (BuildContext context) => BottomnavbarBloc()..add(Bottomnavbarsetindex(pageindex: 0)),
+          lazy: false,
+        ),
         BlocProvider(
           create: (BuildContext context) => MongodbBloc()..add(Connect()),
           lazy: false,
@@ -40,6 +47,16 @@ class weddingitinerary extends StatelessWidget {
         ),
         BlocProvider(
           create: (BuildContext context) =>
+              BookingsBloc(BlocProvider.of<MongodbBloc>(context),BlocProvider.of<AuthenticationBloc>(context)),
+          lazy: false,
+        ),
+        BlocProvider(
+          create: (BuildContext context) =>
+              LocationsBloc(BlocProvider.of<MongodbBloc>(context),BlocProvider.of<AuthenticationBloc>(context)),
+          lazy: false,
+        ),
+        BlocProvider(
+          create: (BuildContext context) =>
               ImagesBloc()..add(ImageBlocInitial()),
           lazy: false,
         ),
@@ -47,7 +64,7 @@ class weddingitinerary extends StatelessWidget {
       child: MaterialApp(
         title: "Wedding Itinerary Application",
         debugShowCheckedModeBanner: false,
-        theme: AppTheme.darkTheme,
+        theme: AppTheme.advancedTheme,
         onGenerateRoute: _appRouter.onGenerateRoute,
       ),
     );

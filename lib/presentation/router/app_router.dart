@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weddingitinerary/presentation/event_screen/event_screen.dart';
 import 'package:weddingitinerary/presentation/home_screen/home_screen.dart';
 import 'package:weddingitinerary/presentation/test_screen/test_screen.dart';
 import '../../core/constants/strings.dart';

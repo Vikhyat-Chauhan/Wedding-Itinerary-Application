@@ -21,37 +21,32 @@ class Shortcuts_Card extends StatelessWidget {
           borderRadius: BorderRadius.circular(12.0),
         ),
         color: Palette.kToDark,
-        child: InkWell(
-          onTap: () {
-            print('Card tapped.');
-          },
-          child: SizedBox(
-            width: 120,
-            height: 155,
-            child: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  SizedBox(height: 5),
-                  Icon(
-                    iconData,
-                    color: Colors.white,
-                    size: 55,
-                  ),
-                  SizedBox(height: 12),
-                  Text(
-                    title,
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 7),
-                  Icon(
-                    Icons.arrow_drop_down_circle,
-                    color: Colors.white,
-                    size: 37,
-                  ),
-                ],
-              ),
+        child: SizedBox(
+          width: 120,
+          height: 155,
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                SizedBox(height: 5),
+                Icon(
+                  iconData,
+                  color: Colors.white,
+                  size: 55,
+                ),
+                SizedBox(height: 12),
+                Text(
+                  title,
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 7),
+                Icon(
+                  Icons.arrow_drop_down_circle,
+                  color: Colors.white,
+                  size: 37,
+                ),
+              ],
             ),
           ),
         ),

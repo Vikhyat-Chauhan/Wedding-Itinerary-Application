@@ -101,6 +101,30 @@ class GcloudApi {
     return filename;
   }
 
+  Future<List<String>> returnAllFilename() async {
+    if (_client == null)
+      _client =
+      await auth.clientViaServiceAccount(_credentials, Storage.SCOPES);
+    List<String> foldername = [];
+    List<String> filename = [];
+    // Instantiate objects to cloud storage
+    var storage = Storage(_client, 'Image Upload Google Storage');
+    var bucket = storage.bucket('ritikawedding');
+    Stream<BucketEntry> stream = bucket.list(prefix: '');
+    await for (var event in stream) {
+      if(!event.isObject)
+        foldername.add(event.name);
+    }
+    foldername.forEach((element) async {
+      Stream<BucketEntry> stream2 = bucket.list(prefix: element);
+      await for (var event in stream2) {
+          filename.add(event.name);
+      }
+    });
+    print(filename);
+    return filename;
+  }
+
   Future<Uint8List> read(String webpath) async {
     // Create a client
     //_client = await auth.clientViaServiceAccount(_credentials, Storage.SCOPES);

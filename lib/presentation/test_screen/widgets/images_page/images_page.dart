@@ -111,17 +111,23 @@ class _Images_PageState extends State<Images_Page> {
   }
 
   void _uploadImages() async {
-    setState(() {
-      isLoading = true;
-    });
     final GcloudApi gcloud = GcloudApi();
     await ImagePicker().pickMultiImage().then((images) async {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          duration: Duration(milliseconds: 400),
+          content: Text('Uploading'),
+        ),
+      );
       if (images != null) {
         await gcloud.spawnclient().whenComplete(() async {
           await gcloud.saveMany(images, 'Wedding Ceremony/').whenComplete(() {
-            setState(() {
-              isLoading = false;
-            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                duration: Duration(milliseconds: 800),
+                content: Text('Done'),
+              ),
+            );
           });
         });
       }
@@ -161,6 +167,7 @@ class _Images_PageState extends State<Images_Page> {
   @override
   void initState() {
     super.initState();
+
     BackButtonInterceptor.add(backInterceptor);
     _scrollController = ScrollController(initialScrollOffset: 5.0)
       ..addListener(_scrollListener);
