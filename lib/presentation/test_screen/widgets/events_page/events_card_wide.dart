@@ -22,7 +22,7 @@ class Events_Card_Wide extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+      padding: const EdgeInsets.fromLTRB(0, 0, 20, 10),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),

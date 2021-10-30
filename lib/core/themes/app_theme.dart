@@ -9,6 +9,7 @@ class AppTheme {
     visualDensity: VisualDensity.adaptivePlatformDensity,
     scaffoldBackgroundColor: Colors.white,
     // Define the default font family.
+    inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder()),
     fontFamily: 'Railway',
     // Define the default `TextTheme`. Use this to specify the default
     // text styling for headlines, titles, bodies of text, and more.
@@ -26,6 +27,7 @@ class AppTheme {
     visualDensity: VisualDensity.adaptivePlatformDensity,
     scaffoldBackgroundColor: Colors.black,
     // Define the default font family.
+    inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder()),
     fontFamily: 'Railway',
     // Define the default `TextTheme`. Use this to specify the default
     // text styling for headlines, titles, bodies of text, and more.

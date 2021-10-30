@@ -9,6 +9,7 @@ import 'package:weddingitinerary/data/models/user/user.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/bookings_bloc/bookings_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/event_bloc/event_bloc.dart';
+import 'package:weddingitinerary/logic/bloc/images_bloc/images_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/locations_bloc/locations_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/mongodb_bloc/mongodb_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/user_bloc/user_bloc.dart';
@@ -155,6 +156,16 @@ class _HomeScreenState extends State<HomeScreen> {
         BlocProvider.of<LocationsBloc>(context).add(LocationsRefresh());
       }
     });
+    Timer.periodic(thirtySec, (Timer t) {
+      var state = BlocProvider.of<ImagesBloc>(context).state.status;
+      var hasreachedmax = BlocProvider.of<ImagesBloc>(context).state.hasReachedMax;
+      if ((state != ImagesStatus.serviceunavailable)) {
+        if(hasreachedmax != true)
+        BlocProvider.of<ImagesBloc>(context)
+            .add(ImageFetch(directory: 'Wedding Ceremony/'));
+      }
+    });
+
     //Timer.periodic(thirtySec, (Timer t) => BlocProvider.of<AuthenticationCubit>(context).add(UserRefresh()));
     super.initState();
   }

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:weddingitinerary/data/repositories/gcloud/gcloud.dart';
@@ -25,35 +26,41 @@ class ImagesBloc extends Bloc<ImagesBlocEvent, ImagesBlocState> {
       await gcloud.spawnclient();
     } else if (event is ImageFetch) {
       if (state.status == ImagesStatus.initial) {
-        await _fetchImages(currentIndex: 0, readmax: 18, directory: event.getDirectory).then((value) {
+        await _fetchImages(
+                currentIndex: 0, readmax: 18,)
+            .then((value) {
           emit(state.copyWith(
-              status: ImagesStatus.success,
-              images: value,));
+            status: ImagesStatus.success,
+            images: value,
+          ));
         });
       } else {
-        await _fetchImages(currentIndex: state.images.length, readmax: 18, directory: event.getDirectory)
+        await _fetchImages(
+                currentIndex: state.images.length,
+                readmax: 18,)
             .then((value) {
           List<XFile> imagelist = value;
           imagelist.addAll(state.images);
           emit(state.copyWith(
-              status: ImagesStatus.success,
-              images: imagelist,));
+            status: ImagesStatus.success,
+            images: imagelist,
+          ));
         });
       }
     }
   }
 
   Future<List<XFile>> _fetchImages(
-      {required int currentIndex, required int readmax, required String directory}) async {
-    await gcloud.returnFilename(directory).then((value) {
+      {required int currentIndex,
+      required int readmax,}) async {
+    await gcloud.returnallFilename().then((value) {
       if (value.length <= state.images.length) {
         emit(state.copyWith(hasReachedMax: true));
       }
     });
-    return await gcloud.readSave(
+    return await gcloud.readallSave(
       readsize: currentIndex + readmax,
       startIndex: currentIndex,
-      directory: 'Wedding Ceremony/',
     );
   }
 

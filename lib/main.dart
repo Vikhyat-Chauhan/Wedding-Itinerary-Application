@@ -15,7 +15,7 @@ import 'logic/bloc/mongodb_bloc/mongodb_bloc.dart';
 import 'logic/debug/app_bloc_observer.dart';
 
 void main() {
-  Bloc.observer = AppBlocObserver();
+  //Bloc.observer = AppBlocObserver();
   runApp(weddingitinerary());
 }
 

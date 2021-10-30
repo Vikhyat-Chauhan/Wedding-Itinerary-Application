@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/data/repositories/gcloud/gcloud.dart';
+import 'package:weddingitinerary/logic/bloc/event_bloc/event_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/images_bloc/images_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/images_bloc/images_bloc.dart';
 import 'package:weddingitinerary/presentation/test_screen/widgets/bookings_page/images_gridview.dart';
@@ -35,82 +36,88 @@ class _Images_PageState extends State<Images_Page> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return BlocListener<ImagesBloc,ImagesBlocState>(listener: (context,state){
+      if(state.hasReachedMax == true){
+        setState(() {
+          isLoading = false;
+        });
+      }
+    },child: Column(
       children: [
         Top_Bar(pagename: 'Images',),
         const SizedBox(height: 10),
         (!viewingimage)
             ? Expanded(
-                child: Stack(
-                  children: [
-                    GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisSpacing: 2,
-                        mainAxisSpacing: 2,
-                        crossAxisCount: 3,
-                      ),
-                      itemCount: _items.length,
-                      controller: _scrollController,
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              viewingimage = true;
-                              viewingimagefile = _items[index];
-                            });
-                          },
-                          child: PostListItem(
-                            image: _items[index],
-                          ),
-                        );
-                      },
-                    ),
-                    if (isLoading) BottomLoader(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
-                          child: FloatingActionButton(
-                            onPressed: () {
-                              _uploadImages();
-                            },
-                            child: const Icon(Icons.upload_outlined),
-                            backgroundColor: Palette.kToDark.shade50,
-                            tooltip: 'Upload Images',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+          child: Stack(
+            children: [
+              GridView.builder(
+                gridDelegate:
+                const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisSpacing: 2,
+                  mainAxisSpacing: 2,
+                  crossAxisCount: 3,
                 ),
-              )
-            : Expanded(
-                child: Stack(children: [
-                  Container(
-                    child: Image.memory(
-                        File(viewingimagefile.path).readAsBytesSync()),
-                  ),
-                  FloatingActionButton(
-                    onPressed: () {
+                itemCount: _items.length,
+                controller: _scrollController,
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
                       setState(() {
-                        viewingimage = false;
+                        viewingimage = true;
+                        viewingimagefile = _items[index];
                       });
                     },
-                    child: const Icon(Icons.arrow_back),
-                    backgroundColor: Palette.kToDark.shade50,
-                    tooltip: 'BACK',
-                  ),
-                ]),
+                    child: PostListItem(
+                      image: _items[index],
+                    ),
+                  );
+                },
               ),
+              if (isLoading) BottomLoader(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        _showDialog();
+                      },
+                      child: const Icon(Icons.upload_outlined),
+                      backgroundColor: Palette.kToDark.shade50,
+                      tooltip: 'Upload Images',
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        )
+            : Expanded(
+          child: Stack(children: [
+            Container(
+              child: Image.memory(
+                  File(viewingimagefile.path).readAsBytesSync()),
+            ),
+            FloatingActionButton(
+              onPressed: () {
+                setState(() {
+                  viewingimage = false;
+                });
+              },
+              child: const Icon(Icons.arrow_back),
+              backgroundColor: Palette.kToDark.shade50,
+              tooltip: 'BACK',
+            ),
+          ]),
+        ),
       ],
-    );
+    ),);
   }
 
-  void _uploadImages() async {
+  void _uploadImages(String directory) async {
     final GcloudApi gcloud = GcloudApi();
     await ImagePicker().pickMultiImage().then((images) async {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -121,7 +128,7 @@ class _Images_PageState extends State<Images_Page> {
       );
       if (images != null) {
         await gcloud.spawnclient().whenComplete(() async {
-          await gcloud.saveMany(images, 'Wedding Ceremony/').whenComplete(() {
+          await gcloud.saveMany(images, directory).whenComplete(() {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 duration: Duration(milliseconds: 800),
@@ -131,6 +138,7 @@ class _Images_PageState extends State<Images_Page> {
           });
         });
       }
+      Navigator.of(context).pop();
     });
   }
 
@@ -206,5 +214,43 @@ class _Images_PageState extends State<Images_Page> {
     ImagesBlocSubscription.cancel();
     BackButtonInterceptor.remove(backInterceptor);
     super.dispose();
+  }
+
+  void _showDialog() {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          content: Text("Select the Event to upload"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                for(int i=0;i<BlocProvider.of<EventBloc>(context).state.events.length;i+=2)
+                Row(
+                  children: [
+                    if(i<(BlocProvider.of<EventBloc>(context).state.events.length))
+                    ElevatedButton(onPressed: (){
+                      _uploadImages(BlocProvider.of<EventBloc>(context).state.events[i].name + '/');
+                    }, child: Text(BlocProvider.of<EventBloc>(context).state.events[i].name)),
+                    Spacer(),
+                    if((i+1)<(BlocProvider.of<EventBloc>(context).state.events.length))
+                    ElevatedButton(onPressed: (){
+                      _uploadImages(BlocProvider.of<EventBloc>(context).state.events[i+1].name + '/');
+                    }, child: Text(BlocProvider.of<EventBloc>(context).state.events[i+1].name)),
+                  ],
+                ),
+                SizedBox(width: 10,),
+                ElevatedButton(onPressed: (){Navigator.of(context).pop();}, child: Text("Close")),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 }

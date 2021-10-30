@@ -2,6 +2,7 @@
 //
 //     final bookings = bookingsFromMap(jsonString);
 
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'dart:convert';
 import 'package:mongo_dart/mongo_dart.dart' as M;
@@ -10,7 +11,7 @@ Bookings bookingsFromMap(Map<String, dynamic> str) => Bookings.fromMap(str);
 
 String bookingsToMap(Bookings data) => json.encode(data.toMap());
 
-class Bookings {
+class Bookings extends Equatable{
   Bookings({
     required this.id,
     required this.userid,
@@ -44,4 +45,14 @@ class Bookings {
     "location": location,
     "room_no": roomNo,
   };
+
+  @override
+  List<Object> get props => [
+    id,
+    userid,
+    name,
+    email,
+    location,
+    roomNo,
+  ];
 }

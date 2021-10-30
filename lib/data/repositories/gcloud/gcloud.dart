@@ -52,7 +52,7 @@ class GcloudApi {
   Future<void> saveMany(List<XFile> images, String directory) async {
     if (_client == null)
       _client =
-      await auth.clientViaServiceAccount(_credentials, Storage.SCOPES);
+          await auth.clientViaServiceAccount(_credentials, Storage.SCOPES);
     images.forEach((element) async {
       if (element != null) {
         var _image = File(element.path);
@@ -101,28 +101,41 @@ class GcloudApi {
     return filename;
   }
 
-  Future<List<String>> returnAllFilename() async {
+  Future<List<String>> returnallFilename() async {
     if (_client == null)
       _client =
-      await auth.clientViaServiceAccount(_credentials, Storage.SCOPES);
-    List<String> foldername = [];
+          await auth.clientViaServiceAccount(_credentials, Storage.SCOPES);
     List<String> filename = [];
+    // Instantiate objects to cloud storage
+    var storage = Storage(_client, 'Image Upload Google Storage');
+    var bucket = storage.bucket('ritikawedding');
+    List<String> filenames = [];
+    await returnFoldernames().then((value) async {
+      for (int i = 0; i < value.length; i++) {
+        await returnFilename(value[i]).then((value) {
+          filenames.addAll(value);
+          if (i == (value.length - 1)) {
+            return filenames;
+          }
+        });
+      }
+    });
+    return filenames;
+  }
+
+  Future<List<String>> returnFoldernames() async {
+    if (_client == null)
+      _client =
+          await auth.clientViaServiceAccount(_credentials, Storage.SCOPES);
+    List<String> foldername = [];
     // Instantiate objects to cloud storage
     var storage = Storage(_client, 'Image Upload Google Storage');
     var bucket = storage.bucket('ritikawedding');
     Stream<BucketEntry> stream = bucket.list(prefix: '');
     await for (var event in stream) {
-      if(!event.isObject)
-        foldername.add(event.name);
+      if (!event.isObject) foldername.add(event.name);
     }
-    foldername.forEach((element) async {
-      Stream<BucketEntry> stream2 = bucket.list(prefix: element);
-      await for (var event in stream2) {
-          filename.add(event.name);
-      }
-    });
-    print(filename);
-    return filename;
+    return foldername;
   }
 
   Future<Uint8List> read(String webpath) async {
@@ -143,13 +156,31 @@ class GcloudApi {
     return byteList;
   }
 
-  Future<List<XFile>> readSave(
-      {required String directory,
-      required int startIndex,
-      required int readsize,}) async {
+  Future<List<XFile>> readSave({
+    required String directory,
+    required int startIndex,
+    required int readsize,
+  }) async {
     print(startIndex);
     print(readsize);
     List<String> filename = await returnFilename(directory);
+    List<XFile> files = [];
+    for (int i = startIndex; i < (readsize); i++) {
+      if (i < filename.length) {
+        files.add(await writeToFile(await read(filename[i]), filename[i]));
+        print(i);
+      }
+    }
+    return files;
+  }
+
+  Future<List<XFile>> readallSave({
+    required int startIndex,
+    required int readsize,
+  }) async {
+    print(startIndex);
+    print(readsize);
+    List<String> filename = await returnallFilename();
     List<XFile> files = [];
     for (int i = startIndex; i < (readsize); i++) {
       if (i < filename.length) {

@@ -28,11 +28,15 @@ class _TestScreenState extends State<TestScreen> {
   double _opacity = 0.6; // from 0-1.0
   bool selected = true;
   int backpress_count = 0;
+
+  var _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BottomnavbarBloc, BottomnavbarBlocState>(
         builder: (context, state) {
         return Scaffold(
+          key: _scaffoldKey,
           body: Container(
             decoration: BoxDecoration(
               image: DecorationImage(
@@ -88,7 +92,7 @@ class _TestScreenState extends State<TestScreen> {
 
               /// Search
               SalomonBottomBarItem(
-                icon: Icon(Icons.location_on),
+                icon: Icon(Icons.hotel),
                 title: Text("Bookings"),
                 selectedColor: Colors.orange,
                 unselectedColor: Colors.white,
@@ -101,10 +105,6 @@ class _TestScreenState extends State<TestScreen> {
   }
 
   Future<bool> backInterceptor(bool stopDefaultButtonEvent, RouteInfo info) async {
-    //final GcloudApi gcloud = GcloudApi();
-    //await gcloud.spawnclient().whenComplete(() async {
-    //  await gcloud.returnAllFilename();
-    //});
     //Do nothing here
     return true;
   }
@@ -126,6 +126,8 @@ class _TestScreenState extends State<TestScreen> {
     BackButtonInterceptor.remove(backInterceptor);
     super.dispose();
   }
+
+
 }
 
 @override
