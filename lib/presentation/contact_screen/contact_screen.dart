@@ -24,15 +24,15 @@ class Contact_Screen extends StatefulWidget {
 class _Contact_ScreenState extends State<Contact_Screen> {
   double _sigmaX = 2.0; // from 0-10
   double _sigmaY = 2.0; // from 0-10
-  double _opacity = 0.8; // from 0-1
-  final String banner_imageurl = "https://cdn.ttgtmedia.com/visuals/German/article/IT-help-desk-adobe.jpg";
+  double _opacity = 0.4; // from 0-1
+  final String banner_imageurl = "https://www.comsyscx.com/wp-content/uploads/2019/04/contact-page-banner.png";
   final List<Contact> contacts = [ Contact(name: "Shashank Pirtani", phoneno: 8826518114), Contact(name: "Ritesh Pirtani", phoneno: 7399373150)];
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage("lib/core/assets/images/background_image_2.jpeg"),
+          image: AssetImage("lib/core/assets/images/background_image_4.jpeg"),
           fit: BoxFit.cover,
         ),
       ),
@@ -52,7 +52,7 @@ class _Contact_ScreenState extends State<Contact_Screen> {
                     ),
                     const SizedBox(height: 40),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                       child: SizedBox(
                         child: Padding(
                           padding: const EdgeInsets.all(0),

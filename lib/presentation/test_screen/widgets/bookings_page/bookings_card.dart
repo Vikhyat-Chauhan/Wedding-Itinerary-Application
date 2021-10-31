@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
-import 'package:weddingitinerary/logic/cubit/authentication_cubit.dart';
 import 'package:marquee/marquee.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 
@@ -31,10 +30,10 @@ class Bookings_Card extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(3.0),
         ),
-        color: Palette.kToDark,
+        color: Palette.kToDark.shade200,
         child: InkWell(
           onTap: () {
-            print('Card tapped.');
+            MapsLauncher.launchQuery(location);
           },
           child: SizedBox(
             child: Padding(
@@ -62,7 +61,7 @@ class Bookings_Card extends StatelessWidget {
                         ),
                       ),
                       Expanded(
-                        flex: 1,
+                        flex: 2,
                         child: Container(
                           alignment: AlignmentDirectional.topStart,
                           child: Column(

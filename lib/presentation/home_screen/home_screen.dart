@@ -13,7 +13,6 @@ import 'package:weddingitinerary/logic/bloc/images_bloc/images_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/locations_bloc/locations_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/mongodb_bloc/mongodb_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/user_bloc/user_bloc.dart';
-import 'package:weddingitinerary/logic/cubit/authentication_cubit.dart';
 import 'package:mongo_dart/mongo_dart.dart' as M;
 import 'widgets/profile_widget.dart';
 
@@ -129,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    const thirtySec = Duration(seconds: 1);
+    const thirtySec = Duration(seconds: 30);
     Timer.periodic(thirtySec, (Timer t) {
       var state = BlocProvider.of<MongodbBloc>(context).state.status;
       if ((state != MongodbStatus.connected) &
@@ -141,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Timer.periodic(thirtySec, (Timer t) {
       var state = BlocProvider.of<EventBloc>(context).state.status;
       if ((state == EventStatus.normal)) {
-        BlocProvider.of<EventBloc>(context).add(EventRefresh());
+       BlocProvider.of<EventBloc>(context).add(EventRefresh());
       }
     });
     Timer.periodic(thirtySec, (Timer t) {
@@ -156,13 +155,14 @@ class _HomeScreenState extends State<HomeScreen> {
         BlocProvider.of<LocationsBloc>(context).add(LocationsRefresh());
       }
     });
+    BlocProvider.of<ImagesBloc>(context).add(ImageFetch(directory: 'Wedding Ceremony/',readmax: 12));
     Timer.periodic(thirtySec, (Timer t) {
       var state = BlocProvider.of<ImagesBloc>(context).state.status;
       var hasreachedmax = BlocProvider.of<ImagesBloc>(context).state.hasReachedMax;
       if ((state != ImagesStatus.serviceunavailable)) {
-        if(hasreachedmax != true)
-        BlocProvider.of<ImagesBloc>(context)
-            .add(ImageFetch(directory: 'Wedding Ceremony/'));
+        if(hasreachedmax != true) {
+          //BlocProvider.of<ImagesBloc>(context).add(ImageFetch(directory: 'Wedding Ceremony/'));
+        }
       }
     });
 

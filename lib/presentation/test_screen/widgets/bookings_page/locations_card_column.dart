@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +9,6 @@ import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/event_bloc/event_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/locations_bloc/locations_bloc.dart';
-import 'package:weddingitinerary/logic/cubit/authentication_cubit.dart';
 
 import 'locations_card.dart';
 
@@ -37,7 +37,14 @@ class Locations_Card_Column extends StatelessWidget {
           ),
           const SizedBox(height: 15),
           BlocBuilder<LocationsBloc,LocationsBlocState>(
+            buildWhen: (previous,current){
+              //print(current.status);
+              //print(previous.locations.first.name);print(current.locations.first.name);
+              //print(previous.locations == current.locations);
+              return false;//listEquals(previous.locations, current.locations);
+            },
             builder: (context, state) {
+              //print("-------------------------------Building------------------------------");
               return SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(

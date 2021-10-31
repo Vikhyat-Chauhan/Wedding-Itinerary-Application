@@ -6,15 +6,26 @@ import 'package:equatable/equatable.dart';
 import 'package:weddingitinerary/data/models/user/user.dart';
 import 'package:weddingitinerary/data/repositories/mongodb/mongodb_crud.dart';
 import 'package:weddingitinerary/logic/bloc/mongodb_bloc/mongodb_bloc.dart';
+import 'package:weddingitinerary/logic/cubit/internet_bloc/internet_bloc.dart';
 
 part 'user_bloc_event.dart';
 part 'user_bloc_state.dart';
 
 class UserBloc extends Bloc<UserBlocEvent, UserBlocState> {
   final MongodbBloc MongoDbBloc;
-  late final StreamSubscription MongoDbBlocSubscription;
-  UserBloc(this.MongoDbBloc) : super(const UserBlocState()) {
+  final InternetBloc _internetBloc;
+  late final StreamSubscription _internetBlocSubscription;
+  UserBloc(this.MongoDbBloc, this._internetBloc,) : super(const UserBlocState()) {
     on<UserBlocEvent>(_userEventHandler, transformer: droppable());
+
+    _internetBlocSubscription = _internetBloc.stream.listen((state) async {
+      if (state.status == InternetStatus.connected) {
+        emit(UserBlocState(status: UserStatus.serviceunavailable));
+      }
+      else if(state.status == InternetStatus.disconnected) {
+        add(UserRefresh());
+      }
+    });
   }
 
   Future<void> _userEventHandler(
@@ -139,7 +150,7 @@ class UserBloc extends Bloc<UserBlocEvent, UserBlocState> {
 
   @override
   Future<void> close() {
-    MongoDbBlocSubscription.cancel();
+    _internetBlocSubscription.cancel();
     return super.close();
   }
 

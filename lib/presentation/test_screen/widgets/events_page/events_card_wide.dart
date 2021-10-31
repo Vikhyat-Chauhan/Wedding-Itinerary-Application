@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/locations_bloc/locations_bloc.dart';
-import 'package:weddingitinerary/logic/cubit/authentication_cubit.dart';
 import 'package:marquee/marquee.dart';
 import 'package:weddingitinerary/presentation/event_screen/event_screen.dart';
 
@@ -22,35 +21,35 @@ class Events_Card_Wide extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 0, 20, 10),
+      padding: const EdgeInsets.fromLTRB(0, 0, 20, 20),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
-        color: Palette.kToDark,
+        color: Palette.kToDark.shade200,
+        shadowColor: Palette.kToDark,
         child: InkWell(
           onTap: () {
             print('Card tapped.');
             Navigator.push(context, MaterialPageRoute(builder: (context) => Event_Screen(name: name, timestamp: timestamp, location: BlocProvider.of<LocationsBloc>(context).state.locations.firstWhere((element) => element.id.toHexString() == location).name , imageiurl: imageiurl, gmaps_address: BlocProvider.of<LocationsBloc>(context).state.locations.firstWhere((element) => element.id.toHexString() == location).location,)));
           },
           child: SizedBox(
-            height: 283,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Container(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.network(
-                        imageiurl,
-                        height: 180.0,
-                        fit: BoxFit.fill,
-                      ),
+            height: 275,
+            child: Column(
+              children: [
+                Container(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.network(
+                      imageiurl,
+                      height: 180.0,
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Row(
+                ),
+                SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                  child: Row(
                     children: [
                       Expanded(
                         flex: 7,
@@ -105,8 +104,8 @@ class Events_Card_Wide extends StatelessWidget {
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

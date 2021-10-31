@@ -12,10 +12,11 @@ import 'logic/bloc/event_bloc/event_bloc.dart';
 import 'logic/bloc/images_bloc/images_bloc.dart';
 import 'logic/bloc/locations_bloc/locations_bloc.dart';
 import 'logic/bloc/mongodb_bloc/mongodb_bloc.dart';
+import 'logic/cubit/internet_bloc/internet_bloc.dart';
 import 'logic/debug/app_bloc_observer.dart';
 
 void main() {
-  //Bloc.observer = AppBlocObserver();
+  Bloc.observer = AppBlocObserver();
   runApp(weddingitinerary());
 }
 
@@ -31,33 +32,38 @@ class weddingitinerary extends StatelessWidget {
           lazy: false,
         ),
         BlocProvider(
-          create: (BuildContext context) => MongodbBloc()..add(Connect()),
+          create: (BuildContext context) =>
+              InternetBloc(),
           lazy: false,
         ),
         BlocProvider(
-          create: (BuildContext context) => AuthenticationBloc(
+          create: (BuildContext context) => MongodbBloc(BlocProvider.of<InternetBloc>(context))..add(Connect()),
+          lazy: false,
+        ),
+        BlocProvider(
+          create: (BuildContext context) => AuthenticationBloc(BlocProvider.of<InternetBloc>(context),
               BlocProvider.of<MongodbBloc>(context))
             ..add(Login()),
           lazy: false,
         ),
         BlocProvider(
           create: (BuildContext context) =>
-              EventBloc(BlocProvider.of<MongodbBloc>(context),BlocProvider.of<AuthenticationBloc>(context)),
+              EventBloc(BlocProvider.of<MongodbBloc>(context),BlocProvider.of<AuthenticationBloc>(context),BlocProvider.of<InternetBloc>(context)),
           lazy: false,
         ),
         BlocProvider(
           create: (BuildContext context) =>
-              BookingsBloc(BlocProvider.of<MongodbBloc>(context),BlocProvider.of<AuthenticationBloc>(context)),
+              BookingsBloc(BlocProvider.of<InternetBloc>(context),BlocProvider.of<MongodbBloc>(context),BlocProvider.of<AuthenticationBloc>(context),),
           lazy: false,
         ),
         BlocProvider(
           create: (BuildContext context) =>
-              LocationsBloc(BlocProvider.of<MongodbBloc>(context),BlocProvider.of<AuthenticationBloc>(context)),
+              LocationsBloc(BlocProvider.of<InternetBloc>(context),BlocProvider.of<MongodbBloc>(context),BlocProvider.of<AuthenticationBloc>(context)),
           lazy: false,
         ),
         BlocProvider(
           create: (BuildContext context) =>
-              ImagesBloc()..add(ImageBlocInitial()),
+              ImagesBloc(BlocProvider.of<InternetBloc>(context))..add(ImageBlocInitial()),
           lazy: false,
         ),
       ],

@@ -33,13 +33,13 @@ class Event_Screen extends StatefulWidget {
 class _Event_ScreenState extends State<Event_Screen> {
   double _sigmaX = 2.0; // from 0-10
   double _sigmaY = 2.0; // from 0-10
-  double _opacity = 0.85; // from 0-1
+  double _opacity = 0.4; // from 0-1
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage("lib/core/assets/images/background_image_2.jpeg"),
+          image: AssetImage("lib/core/assets/images/background_image_4.jpeg"),
           fit: BoxFit.cover,
         ),
       ),

@@ -8,16 +8,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:weddingitinerary/data/repositories/gcloud/gcloud.dart';
+import 'package:weddingitinerary/logic/cubit/internet_bloc/internet_bloc.dart';
 
 part 'images_bloc_event.dart';
 part 'images_bloc_state.dart';
 
 class ImagesBloc extends Bloc<ImagesBlocEvent, ImagesBlocState> {
-  //final MongoDbCubit MongoDbBloc;
-  //late final StreamSubscription MongoDbBlocSubscription;
+  final InternetBloc _internetBloc;
+  late final StreamSubscription _internetBlocSubscription;
+
   final GcloudApi gcloud = GcloudApi();
-  ImagesBloc(/*this.MongoDbBloc*/) : super(const ImagesBlocState()) {
+
+  ImagesBloc(this._internetBloc,) : super(const ImagesBlocState()) {
     on<ImagesBlocEvent>(_imagesEventHandler, transformer: droppable());
+
+    _internetBlocSubscription = _internetBloc.stream.listen((state) async {
+      if (state.status == InternetStatus.connected) {
+        emit(ImagesBlocState(status: ImagesStatus.success));
+      }
+      else if(state.status == InternetStatus.disconnected) {
+        emit(ImagesBlocState(status: ImagesStatus.serviceunavailable));
+      }
+    });
+
   }
 
   Future<void> _imagesEventHandler(
@@ -27,7 +40,7 @@ class ImagesBloc extends Bloc<ImagesBlocEvent, ImagesBlocState> {
     } else if (event is ImageFetch) {
       if (state.status == ImagesStatus.initial) {
         await _fetchImages(
-                currentIndex: 0, readmax: 18,)
+                currentIndex: 0, readmax: 12,)
             .then((value) {
           emit(state.copyWith(
             status: ImagesStatus.success,
@@ -37,7 +50,7 @@ class ImagesBloc extends Bloc<ImagesBlocEvent, ImagesBlocState> {
       } else {
         await _fetchImages(
                 currentIndex: state.images.length,
-                readmax: 18,)
+                readmax: event.readmax,)
             .then((value) {
           List<XFile> imagelist = value;
           imagelist.addAll(state.images);
@@ -66,6 +79,7 @@ class ImagesBloc extends Bloc<ImagesBlocEvent, ImagesBlocState> {
 
   @override
   Future<void> close() {
+    _internetBlocSubscription.cancel();
     return super.close();
   }
 }

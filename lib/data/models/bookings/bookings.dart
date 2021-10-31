@@ -48,7 +48,6 @@ class Bookings extends Equatable{
 
   @override
   List<Object> get props => [
-    id,
     userid,
     name,
     email,

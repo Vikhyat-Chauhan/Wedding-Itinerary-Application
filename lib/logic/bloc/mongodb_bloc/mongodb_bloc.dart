@@ -5,15 +5,25 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weddingitinerary/data/repositories/mongodb/mongodb_crud.dart';
+import 'package:weddingitinerary/logic/cubit/internet_bloc/internet_bloc.dart';
 
 part 'mongodb_bloc_event.dart';
 part 'mongodb_bloc_state.dart';
 
 class MongodbBloc extends Bloc<MongodbBlocEvent, MongodbBlocState> {
-  //final MongoDbCubit MongoDbBloc;
-  //late final StreamSubscription MongoDbBlocSubscription;
-  MongodbBloc(/*this.MongoDbBloc*/) : super(const MongodbBlocState()) {
+  final InternetBloc _internetBloc;
+  late final StreamSubscription _internetBlocSubscription;
+  MongodbBloc(this._internetBloc) : super(const MongodbBlocState()) {
     on<MongodbBlocEvent>(_mongodbEventHandler, transformer: droppable());
+
+    _internetBlocSubscription = _internetBloc.stream.listen((state) async {
+      if (state.status == InternetStatus.connected) {
+        add(Connect());
+      }
+      else if(state.status == InternetStatus.disconnected) {
+        emit(MongodbBlocState(status: MongodbStatus.serviceunavailable));
+      }
+    });
   }
 
   Future<void> _mongodbEventHandler(
@@ -52,7 +62,7 @@ class MongodbBloc extends Bloc<MongodbBlocEvent, MongodbBlocState> {
 
   @override
   Future<void> close() {
-    //MongoDbBlocSubscription.cancel();
+    _internetBlocSubscription.cancel();
     return super.close();
   }
 /*

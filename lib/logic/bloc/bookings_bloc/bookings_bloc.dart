@@ -10,6 +10,7 @@ import 'package:weddingitinerary/data/repositories/mongodb/mongodb_crud.dart';
 import 'package:mongo_dart/mongo_dart.dart' as M;
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/mongodb_bloc/mongodb_bloc.dart';
+import 'package:weddingitinerary/logic/cubit/internet_bloc/internet_bloc.dart';
 
 part 'bookings_bloc_event.dart';
 part 'bookings_bloc_state.dart';
@@ -17,15 +18,28 @@ part 'bookings_bloc_state.dart';
 class BookingsBloc extends Bloc<BookingsBlocEvent, BookingsBlocState> {
   final MongodbBloc MongoDbBloc;
   final AuthenticationBloc authBloc ;
+  final InternetBloc _internetBloc;
   late final StreamSubscription authBlocSubscription;
-  BookingsBloc(this.MongoDbBloc, this.authBloc) : super(const BookingsBlocState()) {
+  late final StreamSubscription _internetBlocSubscription;
+
+  BookingsBloc(this._internetBloc,this.MongoDbBloc, this.authBloc) : super(const BookingsBlocState()) {
     on<BookingsBlocEvent>(_bookingsEventHandler, transformer: droppable());
+
+    _internetBlocSubscription = _internetBloc.stream.listen((state) async {
+      if (state.status == InternetStatus.connected) {
+        emit(BookingsBlocState(status: BookingsStatus.working));
+      }
+      else if(state.status == InternetStatus.disconnected) {
+        emit(BookingsBlocState(status: BookingsStatus.serviceunavailable));
+      }
+    });
 
     authBlocSubscription = authBloc.stream.listen((state) async {
       if (state.status == AuthenticationStatus.authenticated) {
         add(BookingsRefresh());
       }
     });
+
   }
 
   Future<void> _bookingsEventHandler(
@@ -51,7 +65,7 @@ class BookingsBloc extends Bloc<BookingsBlocEvent, BookingsBlocState> {
 
   @override
   Future<void> close() {
-    //MongoDbBlocSubscription.cancel();
+    _internetBlocSubscription.cancel();
     return super.close();
   }
 

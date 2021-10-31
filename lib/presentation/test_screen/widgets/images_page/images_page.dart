@@ -36,85 +36,135 @@ class _Images_PageState extends State<Images_Page> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ImagesBloc,ImagesBlocState>(listener: (context,state){
-      if(state.hasReachedMax == true){
-        setState(() {
-          isLoading = false;
-        });
-      }
-    },child: Column(
-      children: [
-        Top_Bar(pagename: 'Images',),
-        const SizedBox(height: 10),
-        (!viewingimage)
-            ? Expanded(
-          child: Stack(
-            children: [
-              GridView.builder(
-                gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisSpacing: 2,
-                  mainAxisSpacing: 2,
-                  crossAxisCount: 3,
-                ),
-                itemCount: _items.length,
-                controller: _scrollController,
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        viewingimage = true;
-                        viewingimagefile = _items[index];
-                      });
-                    },
-                    child: PostListItem(
-                      image: _items[index],
-                    ),
-                  );
-                },
+    return BlocListener<ImagesBloc, ImagesBlocState>(
+      listener: (context, state) {
+        if (state.hasReachedMax == true) {
+          setState(() {
+            isLoading = false;
+          });
+        }
+      },
+      child: Column(
+        children: [
+          Top_Bar(
+            pagename: 'Images',
+          ),
+          const SizedBox(height: 40),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20,0,0,0),
+            child: Container(
+              alignment: Alignment.topLeft,
+              child: const Text(
+                "Upload Images",
+                style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w300,
+                    fontFamily: 'Arial narrow'),
               ),
-              if (isLoading) BottomLoader(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20,0,0,0),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
-                    child: FloatingActionButton(
-                      onPressed: () {
-                        _showDialog();
-                      },
-                      child: const Icon(Icons.upload_outlined),
-                      backgroundColor: Palette.kToDark.shade50,
-                      tooltip: 'Upload Images',
+                  for (int i = 0;
+                      i < BlocProvider.of<EventBloc>(context).state.events.length;
+                      i++)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(5,0,5,0),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            _uploadImages(BlocProvider.of<EventBloc>(context)
+                                    .state
+                                    .events[i]
+                                    .name +
+                                '/');
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(BlocProvider.of<EventBloc>(context)
+                                .state
+                                .events[i]
+                                .name, style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.normal)),
+                          ),),
                     ),
-                  ),
                 ],
               ),
-            ],
+            ),
           ),
-        )
-            : Expanded(
-          child: Stack(children: [
-            Container(
-              child: Image.memory(
-                  File(viewingimagefile.path).readAsBytesSync()),
-            ),
-            FloatingActionButton(
-              onPressed: () {
-                setState(() {
-                  viewingimage = false;
-                });
-              },
-              child: const Icon(Icons.arrow_back),
-              backgroundColor: Palette.kToDark.shade50,
-              tooltip: 'BACK',
-            ),
-          ]),
-        ),
-      ],
-    ),);
+          (!viewingimage)
+              ? Expanded(
+                  child: Stack(
+                    children: [
+                      GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisSpacing: 2,
+                          mainAxisSpacing: 2,
+                          crossAxisCount: 3,
+                        ),
+                        itemCount: _items.length,
+                        controller: _scrollController,
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                viewingimage = true;
+                                viewingimagefile = _items[index];
+                              });
+                            },
+                            child: PostListItem(
+                              image: _items[index],
+                            ),
+                          );
+                        },
+                      ),
+                      if (isLoading) BottomLoader(),
+                    /*  Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+                            child: FloatingActionButton(
+                              onPressed: () {
+                                _showDialog();
+                              },
+                              child: const Icon(Icons.upload_outlined),
+                              backgroundColor: Palette.kToDark.shade50,
+                              tooltip: 'Upload Images',
+                            ),
+                          ),
+                        ],
+                      ), */
+                    ],
+                  ),
+                )
+              : Expanded(
+                  child: Stack(children: [
+                    Container(
+                      child: Image.memory(
+                          File(viewingimagefile.path).readAsBytesSync()),
+                    ),
+                    FloatingActionButton(
+                      onPressed: () {
+                        setState(() {
+                          viewingimage = false;
+                        });
+                      },
+                      child: const Icon(Icons.arrow_back),
+                      backgroundColor: Palette.kToDark.shade50,
+                      tooltip: 'BACK',
+                    ),
+                  ]),
+                ),
+        ],
+      ),
+    );
   }
 
   void _uploadImages(String directory) async {
@@ -150,7 +200,7 @@ class _Images_PageState extends State<Images_Page> {
       print("RUNNING LOAD MORE");
       if (!imagesBloc.state.hasReachedMax) {
         BlocProvider.of<ImagesBloc>(context)
-            .add(ImageFetch(directory: 'Wedding Ceremony/'));
+            .add(ImageFetch(directory: 'Wedding Ceremony/', readmax: 9));
         setState(() {
           isLoading = true;
         });
@@ -163,7 +213,7 @@ class _Images_PageState extends State<Images_Page> {
   }
 
   bool backInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    if(viewingimage){
+    if (viewingimage) {
       setState(() {
         viewingimage = false;
       });
@@ -199,11 +249,10 @@ class _Images_PageState extends State<Images_Page> {
       }
     });
     ////LOADING FIRST  DATA
-    if(BlocProvider.of<ImagesBloc>(context).state.images.isEmpty) {
+    if (BlocProvider.of<ImagesBloc>(context).state.images.isEmpty) {
       BlocProvider.of<ImagesBloc>(context)
-          .add(ImageFetch(directory: 'Wedding Ceremony/'));
-    }
-    else{
+          .add(ImageFetch(directory: 'Wedding Ceremony/', readmax: 12));
+    } else {
       _items.addAll(BlocProvider.of<ImagesBloc>(context).state.images);
     }
   }
@@ -230,22 +279,56 @@ class _Images_PageState extends State<Images_Page> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                for(int i=0;i<BlocProvider.of<EventBloc>(context).state.events.length;i+=2)
-                Row(
-                  children: [
-                    if(i<(BlocProvider.of<EventBloc>(context).state.events.length))
-                    ElevatedButton(onPressed: (){
-                      _uploadImages(BlocProvider.of<EventBloc>(context).state.events[i].name + '/');
-                    }, child: Text(BlocProvider.of<EventBloc>(context).state.events[i].name)),
-                    Spacer(),
-                    if((i+1)<(BlocProvider.of<EventBloc>(context).state.events.length))
-                    ElevatedButton(onPressed: (){
-                      _uploadImages(BlocProvider.of<EventBloc>(context).state.events[i+1].name + '/');
-                    }, child: Text(BlocProvider.of<EventBloc>(context).state.events[i+1].name)),
-                  ],
+                for (int i = 0;
+                    i < BlocProvider.of<EventBloc>(context).state.events.length;
+                    i += 2)
+                  Row(
+                    children: [
+                      if (i <
+                          (BlocProvider.of<EventBloc>(context)
+                              .state
+                              .events
+                              .length))
+                        ElevatedButton(
+                            onPressed: () {
+                              _uploadImages(BlocProvider.of<EventBloc>(context)
+                                      .state
+                                      .events[i]
+                                      .name +
+                                  '/');
+                            },
+                            child: Text(BlocProvider.of<EventBloc>(context)
+                                .state
+                                .events[i]
+                                .name)),
+                      Spacer(),
+                      if ((i + 1) <
+                          (BlocProvider.of<EventBloc>(context)
+                              .state
+                              .events
+                              .length))
+                        ElevatedButton(
+                            onPressed: () {
+                              _uploadImages(BlocProvider.of<EventBloc>(context)
+                                      .state
+                                      .events[i + 1]
+                                      .name +
+                                  '/');
+                            },
+                            child: Text(BlocProvider.of<EventBloc>(context)
+                                .state
+                                .events[i + 1]
+                                .name)),
+                    ],
+                  ),
+                SizedBox(
+                  width: 10,
                 ),
-                SizedBox(width: 10,),
-                ElevatedButton(onPressed: (){Navigator.of(context).pop();}, child: Text("Close")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("Close")),
               ],
             ),
           ],

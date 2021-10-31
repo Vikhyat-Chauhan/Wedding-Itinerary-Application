@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/data/repositories/gcloud/gcloud.dart';
 import 'package:weddingitinerary/logic/bloc/bottomnavbar_bloc/bottomnavbar_bloc.dart';
+import 'package:weddingitinerary/logic/bloc/images_bloc/images_bloc.dart';
 import 'package:weddingitinerary/presentation/test_screen/widgets/bookings_page/bookings_page.dart';
 import 'package:weddingitinerary/presentation/test_screen/widgets/discover_page/discover_page.dart';
 import 'package:weddingitinerary/presentation/test_screen/widgets/events_page/events_page.dart';
@@ -25,7 +26,7 @@ class TestScreen extends StatefulWidget {
 class _TestScreenState extends State<TestScreen> {
   double _sigmaX = 2.0; // from 0-10
   double _sigmaY = 2.0; // from 0-10
-  double _opacity = 0.6; // from 0-1.0
+  double _opacity = 0.4; // from 0-1.0
   bool selected = true;
   int backpress_count = 0;
 
@@ -40,7 +41,7 @@ class _TestScreenState extends State<TestScreen> {
           body: Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("lib/core/assets/images/background_image_2.jpeg"),
+                image: AssetImage("lib/core/assets/images/background_image_4.jpeg"),
                 fit: BoxFit.cover,
               ),
             ),

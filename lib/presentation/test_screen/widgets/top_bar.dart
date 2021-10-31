@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weddingitinerary/core/constants/strings.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
-import 'package:weddingitinerary/logic/cubit/authentication_cubit.dart';
 
 class Top_Bar extends StatelessWidget {
   Top_Bar({Key? key, required this.pagename,}) : super(key: key);
@@ -75,7 +74,7 @@ class Top_Bar extends StatelessWidget {
                         ),
                         onTap: () {
                           BlocProvider.of<AuthenticationBloc>(context)
-                              .add(Logout());
+                              .add(Logout()); print("Here");
                           Navigator.popAndPushNamed(context, '/');
                         },
                       ),

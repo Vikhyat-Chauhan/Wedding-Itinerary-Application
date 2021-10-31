@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/bottomnavbar_bloc/bottomnavbar_bloc.dart';
-import 'package:weddingitinerary/logic/cubit/authentication_cubit.dart';
 import 'package:weddingitinerary/presentation/contact_screen/contact_screen.dart';
 import 'package:weddingitinerary/presentation/test_screen/widgets/events_page/events_card.dart';
 import 'package:weddingitinerary/presentation/test_screen/widgets/discover_page/shortcuts_card.dart';

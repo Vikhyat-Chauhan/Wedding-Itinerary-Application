@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/locations_bloc/locations_bloc.dart';
-import 'package:weddingitinerary/logic/cubit/authentication_cubit.dart';
 import 'package:marquee/marquee.dart';
 import 'package:weddingitinerary/presentation/event_screen/event_screen.dart';
 
@@ -26,16 +25,16 @@ class Events_Card extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
-        color: Palette.kToDark,
+        color: Palette.kToDark.shade200,
         child: InkWell(
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => Event_Screen(name: name, timestamp: timestamp, location: BlocProvider.of<LocationsBloc>(context).state.locations.firstWhere((element) => element.id.toHexString() == location).name , imageiurl: imageiurl, gmaps_address: BlocProvider.of<LocationsBloc>(context).state.locations.firstWhere((element) => element.id.toHexString() == location).location,)));
           },
           child: SizedBox(
             width: 250,
-            height: 265,
+            height: 255,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(0.0),
               child: Column(
                 children: [
                   Container(
@@ -49,60 +48,63 @@ class Events_Card extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 7,
-                        child: Container(
-                          alignment: AlignmentDirectional.topStart,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                name,
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18),
-                              ),
-                              SizedBox(height: 7),
-                              Text(
-                                  returntime(timestamp) + ' on ' + returnDay(timestamp),
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 15),
-                              ),
-                              SizedBox(height: 7),
-                              SizedBox(
-                                width: 170,
-                                height: 20,
-                                child: scroll? Marquee(
-                                  text: BlocProvider.of<LocationsBloc>(context).state.locations.firstWhere((element) => element.id.toHexString() == location).name,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 7,
+                          child: Container(
+                            alignment: AlignmentDirectional.topStart,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  name,
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                ),
+                                SizedBox(height: 7),
+                                Text(
+                                    returntime(timestamp) + ' on ' + returnDay(timestamp),
                                   style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.normal,
-                                      fontSize: 15,),
-                                  blankSpace: 20.0,
-                                  velocity: 35.0,
-                                ):Text(
-                                  BlocProvider.of<LocationsBloc>(context).state.locations.firstWhere((element) => element.id.toHexString() == location).name,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 15,),
+                                      fontSize: 15),
                                 ),
-                              ),
-                            ],
+                                SizedBox(height: 7),
+                                SizedBox(
+                                  width: 170,
+                                  height: 20,
+                                  child: scroll? Marquee(
+                                    text: BlocProvider.of<LocationsBloc>(context).state.locations.firstWhere((element) => element.id.toHexString() == location).name,
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 15,),
+                                    blankSpace: 20.0,
+                                    velocity: 35.0,
+                                  ):Text(
+                                    BlocProvider.of<LocationsBloc>(context).state.locations.firstWhere((element) => element.id.toHexString() == location).name,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 15,),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      const Icon(
-                        Icons.alarm,
-                        color: Colors.white,
-                        size: 50,
-                      ),
-                    ],
+                        const Icon(
+                          Icons.alarm,
+                          color: Colors.white,
+                          size: 50,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

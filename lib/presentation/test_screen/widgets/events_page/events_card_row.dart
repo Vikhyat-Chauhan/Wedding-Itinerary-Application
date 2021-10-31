@@ -8,7 +8,6 @@ import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/data/models/event/event.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/event_bloc/event_bloc.dart';
-import 'package:weddingitinerary/logic/cubit/authentication_cubit.dart';
 import 'package:weddingitinerary/presentation/test_screen/widgets/events_page/events_card.dart';
 
 class Events_Card_Row extends StatelessWidget {
@@ -34,7 +33,7 @@ class Events_Card_Row extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
           BlocBuilder<EventBloc,EventBlocState>(
             builder: (context, state) {
               return SingleChildScrollView(

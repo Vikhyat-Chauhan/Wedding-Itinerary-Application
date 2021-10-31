@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
-import 'package:weddingitinerary/logic/cubit/authentication_cubit.dart';
 
 class Shortcuts_Card extends StatelessWidget {
   final IconData iconData;
@@ -20,7 +19,7 @@ class Shortcuts_Card extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
-        color: Palette.kToDark,
+        color: Palette.kToDark.shade200,
         child: SizedBox(
           width: 120,
           height: 155,

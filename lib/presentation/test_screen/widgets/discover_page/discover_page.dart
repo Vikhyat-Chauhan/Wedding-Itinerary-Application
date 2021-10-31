@@ -16,7 +16,7 @@ class Discover_Page extends StatelessWidget {
         Shortcut_Card_Row(),
         SizedBox(height: 40),
         Events_Card_Row(),
-        SizedBox(height: 24),
+        //SizedBox(height: 24),
         /*
             Center(
               child: ElevatedButton(

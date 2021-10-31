@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="in.thenextmove.weddingitinerary">
    <application
-        android:label="weddingitinerary"
+        android:label="Durgest and Ritika Wedding"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

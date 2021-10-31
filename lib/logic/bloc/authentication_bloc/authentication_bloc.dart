@@ -13,6 +13,7 @@ import 'package:weddingitinerary/data/repositories/mongodb/mongodb_crud.dart';
 import 'package:weddingitinerary/logic/bloc/mongodb_bloc/mongodb_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/user_bloc/user_bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:weddingitinerary/logic/cubit/internet_bloc/internet_bloc.dart';
 
 part 'authentication_bloc_event.dart';
 part 'authentication_bloc_state.dart';
@@ -20,18 +21,29 @@ part 'authentication_bloc_state.dart';
 class AuthenticationBloc
     extends Bloc<AuthenticationBlocEvent, AuthenticationBlocState> {
   final MongodbBloc mongodbBloc;
+  final InternetBloc _internetBloc;
   final FlutterAppAuth appAuth = FlutterAppAuth();
 
   late final StreamSubscription UserBlocSubscription;
   late final StreamSubscription MongoDBSubscription;
+  late final StreamSubscription _internetBlocSubscription;
 
-  AuthenticationBloc(this.mongodbBloc)
+  AuthenticationBloc(this._internetBloc,this.mongodbBloc)
       : super(const AuthenticationBlocState()) {
     on<AuthenticationBlocEvent>(_authenticationEventHandler,
         transformer: droppable());
     MongoDBSubscription = mongodbBloc.stream.listen((state) async {
       if (state.status == MongodbStatus.connected) {
         await _loginwithtoken();
+      }
+    });
+
+    _internetBlocSubscription = _internetBloc.stream.listen((state) async {
+      if (state.status == InternetStatus.connected) {
+        //emit(AuthenticationBlocState(status: AuthenticationStatus.));
+      }
+      else if(state.status == InternetStatus.disconnected) {
+        //emit(ImagesBlocState(status: ImagesStatus.serviceunavailable));
       }
     });
   }
@@ -70,25 +82,9 @@ class AuthenticationBloc
 
   @override
   Future<void> close() {
-    //MongoDbBlocSubscription.cancel();
+    _internetBlocSubscription..cancel();
     return super.close();
   }
-/*
-  Future<bool> internetWorking() async {
-    bool working = false;
-    if (MongoDbBloc.state.status == MongoDBStatus.initial) {
-      working = false;
-    } else if (MongoDbBloc.state.status == MongoDBStatus.connecting) {
-      working = false;
-    } else if (MongoDbBloc.state.status == MongoDBStatus.disconnected) {
-      working = false;
-    } else if (MongoDbBloc.state.status == MongoDBStatus.connected) {
-      working = true;
-    } else {
-      working = false;
-    }
-    return working;
-  } */
 
   Future<bool> mongodbWorking() async {
     bool working = false;

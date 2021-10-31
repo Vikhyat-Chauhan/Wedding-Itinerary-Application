@@ -8,12 +8,9 @@ abstract class ImagesBlocEvent extends Equatable {
 }
 
 class ImageFetch extends ImagesBlocEvent {
-  const ImageFetch({required this.directory});
+  const ImageFetch({required this.directory, required this.readmax});
   final String directory;
-
-  String get getDirectory{
-    return directory;
-  }
+  final int readmax;
 }
 
 class ImageBlocInitial extends ImagesBlocEvent {}

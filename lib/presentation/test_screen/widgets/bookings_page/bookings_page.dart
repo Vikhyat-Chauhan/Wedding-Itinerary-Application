@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:weddingitinerary/core/themes/palette.dart';
+import 'package:weddingitinerary/data/models/bookings/bookings.dart';
+import 'package:weddingitinerary/logic/bloc/bookings_bloc/bookings_bloc.dart';
 import 'package:weddingitinerary/presentation/test_screen/widgets/bookings_page/bookings_card_column.dart';
 import 'package:weddingitinerary/presentation/test_screen/widgets/bookings_page/locations_card_column.dart';
 
@@ -15,38 +19,107 @@ class Bookings_Page extends StatefulWidget {
 }
 
 class _Bookings_PageState extends State<Bookings_Page> {
+  late dynamic keyboardVisibilityController;
+  String textfielddata = "";
+  List<Bookings> bookingscopy = [];
   bool hideWidget = false;
   @override
   Widget build(BuildContext context) {
-    bool moveWidgets = false;
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Column(
-        children: [
-          Top_Bar(pagename: 'Bookings',),
-          if(!hideWidget)
-          const SizedBox(height: 40),
-          if(!hideWidget)
-          Locations_Card_Column(),
-          if(hideWidget)
-          const SizedBox(height: 10),
-          if(!hideWidget)
-          const SizedBox(height: 40),
-          Bookings_Card_Column(),
-        ],
-      ),
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              Top_Bar(pagename: 'Bookings',),
+              if(!hideWidget)
+              const SizedBox(height: 40),
+              if(!hideWidget)
+              Locations_Card_Column(),
+              if(hideWidget)
+              const SizedBox(height: 10),
+              if(!hideWidget)
+              const SizedBox(height: 40),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20,0,0,0),
+                child: Container(
+                  alignment: Alignment.topLeft,
+                  child: const Text(
+                    "Bookings",
+                    style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w300,
+                        fontFamily: 'Arial narrow'),
+                  ),
+                ),
+              ),
+              if(!hideWidget)
+              const SizedBox(height: 15),
+              if(hideWidget)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 25, 0),
+                child: Container(
+                  height: 60,
+                  child: TextField(
+                    textAlignVertical: TextAlignVertical.center,
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      suffixIcon: Icon(Icons.search),
+                      filled: true,
+                      contentPadding: EdgeInsets.all(8.0),
+                      fillColor: Palette.kToDark.shade300,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    onChanged: (typed_item) {
+                      setState(() {
+                        textfielddata = typed_item;
+                        bookingscopy.clear();
+                        for (int i = 0;i < BlocProvider.of<BookingsBloc>(context).state.bookings.length; i++) {
+                          if (textfielddata.toLowerCase() == BlocProvider.of<BookingsBloc>(context).state.bookings[i].name.substring(0, textfielddata.length).toLowerCase()) {
+                            bookingscopy.add(BlocProvider.of<BookingsBloc>(context).state.bookings[i]);
+                          }
+                        }
+                      });
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5),
+              if(!hideWidget)
+                Bookings_Card_Column(bookings: BlocProvider.of<BookingsBloc>(context).state.bookings,),
+              if(hideWidget)
+                Bookings_Card_Column(bookings: bookingscopy,),
+              if(hideWidget)
+                SizedBox(height: MediaQuery.of(context).size.height),
+            ],
+          ),
+        ),
+        if(!hideWidget)
+          Positioned.fill(
+              child: Align(alignment: Alignment(1, 1),
+                  child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 10, 10),
+                child: FloatingActionButton(onPressed: (){
+                  hideWidget = true;
+                  setState(() {
+                  });
+                },child: const Icon(Icons.search),
+                  backgroundColor: Palette.kToDark.shade200,
+                  tooltip: 'Search',),
+              )),),
+      ],
     );
   }
 
   @override
   void initState() {
     var keyboardVisibilityController = KeyboardVisibilityController();
-    // Query
-    print('Keyboard visibility direct query: ${keyboardVisibilityController.isVisible}');
 
     // Subscribe
     keyboardSubscription = keyboardVisibilityController.onChange.listen((bool visible) {
-      print('Keyboard visibility update. Is visible: $visible');
       setState(() {
         hideWidget = visible;
       });
