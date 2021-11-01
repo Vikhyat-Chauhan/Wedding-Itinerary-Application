@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/data/repositories/gcloud/gcloud.dart';
 import 'package:weddingitinerary/logic/bloc/event_bloc/event_bloc.dart';
@@ -33,6 +36,7 @@ class _Images_PageState extends State<Images_Page> {
   late ScrollController _scrollController;
   bool viewingimage = false;
   late XFile viewingimagefile;
+  bool permissionGranted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +55,7 @@ class _Images_PageState extends State<Images_Page> {
           ),
           const SizedBox(height: 40),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20,0,0,0),
+            padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
             child: Container(
               alignment: Alignment.topLeft,
               child: const Text(
@@ -65,36 +69,47 @@ class _Images_PageState extends State<Images_Page> {
           ),
           const SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20,0,0,0),
+            padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
                   for (int i = 0;
-                      i < BlocProvider.of<EventBloc>(context).state.events.length;
+                      i <
+                          BlocProvider.of<EventBloc>(context)
+                              .state
+                              .events
+                              .length;
                       i++)
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(5,0,5,0),
+                      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                       child: ElevatedButton(
-                          onPressed: () {
-                            _uploadImages(BlocProvider.of<EventBloc>(context)
-                                    .state
-                                    .events[i]
-                                    .name +
-                                '/');
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text(BlocProvider.of<EventBloc>(context)
-                                .state
-                                .events[i]
-                                .name, style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.normal)),
-                          ),),
+                        onPressed: () {
+                          _showDialog(BlocProvider.of<EventBloc>(context)
+                                  .state
+                                  .events[i]
+                                  .name +
+                              '/');
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Text(
+                              BlocProvider.of<EventBloc>(context)
+                                  .state
+                                  .events[i]
+                                  .name,
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.normal)),
+                        ),
+                      ),
                     ),
                 ],
               ),
             ),
           ),
+          const SizedBox(height: 20),
           (!viewingimage)
               ? Expanded(
                   child: Stack(
@@ -125,40 +140,49 @@ class _Images_PageState extends State<Images_Page> {
                         },
                       ),
                       if (isLoading) BottomLoader(),
-                    /*  Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
-                            child: FloatingActionButton(
-                              onPressed: () {
-                                _showDialog();
-                              },
-                              child: const Icon(Icons.upload_outlined),
-                              backgroundColor: Palette.kToDark.shade50,
-                              tooltip: 'Upload Images',
-                            ),
-                          ),
-                        ],
-                      ), */
                     ],
                   ),
                 )
               : Expanded(
                   child: Stack(children: [
-                    Container(
-                      child: Image.memory(
-                          File(viewingimagefile.path).readAsBytesSync()),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        child: Image.memory(
+                            File(viewingimagefile.path).readAsBytesSync()),
+                      ),
                     ),
-                    FloatingActionButton(
-                      onPressed: () {
-                        setState(() {
-                          viewingimage = false;
-                        });
-                      },
-                      child: const Icon(Icons.arrow_back),
-                      backgroundColor: Palette.kToDark.shade50,
-                      tooltip: 'BACK',
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            setState(() {
+                              viewingimage = false;
+                            });
+                          },
+                          child: const Icon(Icons.arrow_back),
+                          backgroundColor: Palette.kToDark.shade50,
+                          tooltip: 'BACK',
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: FloatingActionButton(
+                          onPressed: () async {
+                            await _writeToDownloads(
+                                File(viewingimagefile.path).readAsBytesSync(),
+                                viewingimagefile.path);
+                          },
+                          child: const Icon(Icons.download),
+                          backgroundColor: Palette.kToDark.shade50,
+                          tooltip: 'Download',
+                        ),
+                      ),
                     ),
                   ]),
                 ),
@@ -167,16 +191,55 @@ class _Images_PageState extends State<Images_Page> {
     );
   }
 
+  Future _getStoragePermission() async {
+    if (await Permission.storage.request().isGranted) {
+      setState(() {
+        permissionGranted = true;
+      });
+    } else if (await Permission.storage.request().isPermanentlyDenied) {
+      await openAppSettings();
+    } else if (await Permission.storage.request().isDenied) {
+      setState(() {
+        permissionGranted = false;
+      });
+    }
+  }
+
+  Future<void> _writeToDownloads(Uint8List data, String webpath) async {
+    // storage permission ask
+    Directory downloadsfolder = Directory("/storage/emulated/0/Download");
+    if (permissionGranted) {
+      final buffer = data.buffer;
+      File newfile = File(downloadsfolder.path + '/' + webpath.split('/').last);
+      newfile.writeAsBytesSync(
+          buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+    } else {
+      await _getStoragePermission().whenComplete(() {
+        final buffer = data.buffer;
+        File newfile =
+            File(downloadsfolder.path + '/' + webpath.split('/').last);
+        newfile.writeAsBytesSync(
+            buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(milliseconds: 800),
+            content: Text('Saved to Downloads'),
+          ),
+        );
+      });
+    }
+  }
+
   void _uploadImages(String directory) async {
     final GcloudApi gcloud = GcloudApi();
     await ImagePicker().pickMultiImage().then((images) async {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          duration: Duration(milliseconds: 400),
-          content: Text('Uploading'),
-        ),
-      );
       if (images != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(milliseconds: 400),
+            content: Text('Uploading'),
+          ),
+        );
         await gcloud.spawnclient().whenComplete(() async {
           await gcloud.saveMany(images, directory).whenComplete(() {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -188,7 +251,34 @@ class _Images_PageState extends State<Images_Page> {
           });
         });
       }
-      Navigator.of(context).pop();
+    });
+  }
+
+  void _uploadVideo(String directory) async {
+    final GcloudApi gcloud = GcloudApi();
+    List<XFile> videolist = [];
+    await ImagePicker()
+        .pickVideo(source: ImageSource.gallery)
+        .then((video) async {
+      videolist.add(video!);
+      if (videolist != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(milliseconds: 400),
+            content: Text('Uploading'),
+          ),
+        );
+        await gcloud.spawnclient().whenComplete(() async {
+          await gcloud.saveMany(videolist, directory).whenComplete(() {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                duration: Duration(milliseconds: 800),
+                content: Text('Done'),
+              ),
+            );
+          });
+        });
+      }
     });
   }
 
@@ -200,7 +290,7 @@ class _Images_PageState extends State<Images_Page> {
       print("RUNNING LOAD MORE");
       if (!imagesBloc.state.hasReachedMax) {
         BlocProvider.of<ImagesBloc>(context)
-            .add(ImageFetch(directory: 'Wedding Ceremony/', readmax: 9));
+            .add(const ImageFetch(directory: 'Wedding Ceremony/', readmax: 12));
         setState(() {
           isLoading = true;
         });
@@ -251,7 +341,7 @@ class _Images_PageState extends State<Images_Page> {
     ////LOADING FIRST  DATA
     if (BlocProvider.of<ImagesBloc>(context).state.images.isEmpty) {
       BlocProvider.of<ImagesBloc>(context)
-          .add(ImageFetch(directory: 'Wedding Ceremony/', readmax: 12));
+          .add(const ImageFetch(directory: 'Wedding Ceremony/', readmax: 12));
     } else {
       _items.addAll(BlocProvider.of<ImagesBloc>(context).state.images);
     }
@@ -265,70 +355,71 @@ class _Images_PageState extends State<Images_Page> {
     super.dispose();
   }
 
-  void _showDialog() {
+  void _showDialog(String path) {
     // flutter defined function
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          content: Text("Select the Event to upload"),
+          content: const Text("What do you want to Upload?",textAlign: TextAlign.center, style: TextStyle(fontSize: 18),),
+          contentPadding: const EdgeInsets.fromLTRB(5, 20, 5, 0),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                for (int i = 0;
-                    i < BlocProvider.of<EventBloc>(context).state.events.length;
-                    i += 2)
-                  Row(
-                    children: [
-                      if (i <
-                          (BlocProvider.of<EventBloc>(context)
-                              .state
-                              .events
-                              .length))
-                        ElevatedButton(
-                            onPressed: () {
-                              _uploadImages(BlocProvider.of<EventBloc>(context)
-                                      .state
-                                      .events[i]
-                                      .name +
-                                  '/');
-                            },
-                            child: Text(BlocProvider.of<EventBloc>(context)
-                                .state
-                                .events[i]
-                                .name)),
-                      Spacer(),
-                      if ((i + 1) <
-                          (BlocProvider.of<EventBloc>(context)
-                              .state
-                              .events
-                              .length))
-                        ElevatedButton(
-                            onPressed: () {
-                              _uploadImages(BlocProvider.of<EventBloc>(context)
-                                      .state
-                                      .events[i + 1]
-                                      .name +
-                                  '/');
-                            },
-                            child: Text(BlocProvider.of<EventBloc>(context)
-                                .state
-                                .events[i + 1]
-                                .name)),
-                    ],
-                  ),
-                SizedBox(
-                  width: 10,
+                Row(
+                  children: [
+                    const SizedBox(
+                      height: 60,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(5,0,0,0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _uploadImages(path);
+                          Navigator.of(context).pop();
+                        },
+                        child:  const Padding(
+                          padding: EdgeInsets.all(5.0),
+                          child: Text(
+                              "Images",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.normal)),
+                        ),
+                      ),
+                    ),
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0,0,5,0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _uploadVideo(path);
+                          Navigator.of(context).pop();
+                        },
+                        child:  const Padding(
+                          padding: EdgeInsets.all(5.0),
+                          child: Text(
+                              "Video",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.normal)),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text("Close")),
+                Align(
+                  alignment: Alignment.center,
+                  child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text("Close")),
+                ),
               ],
             ),
           ],

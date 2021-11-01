@@ -89,7 +89,11 @@ class _Bookings_PageState extends State<Bookings_Page> {
               ),
               const SizedBox(height: 5),
               if(!hideWidget)
-                Bookings_Card_Column(bookings: BlocProvider.of<BookingsBloc>(context).state.bookings,),
+                BlocBuilder<BookingsBloc,BookingsBlocState>(
+                  builder: (context, state) {
+                    return Bookings_Card_Column(bookings: state.bookings,);
+                  }
+                ),
               if(hideWidget)
                 Bookings_Card_Column(bookings: bookingscopy,),
               if(hideWidget)

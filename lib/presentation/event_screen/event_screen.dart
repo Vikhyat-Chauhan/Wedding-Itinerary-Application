@@ -37,7 +37,7 @@ class _Event_ScreenState extends State<Event_Screen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage("lib/core/assets/images/background_image_4.jpeg"),
           fit: BoxFit.cover,
@@ -80,7 +80,7 @@ class _Event_ScreenState extends State<Event_Screen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                       child: Container(
@@ -94,7 +94,7 @@ class _Event_ScreenState extends State<Event_Screen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 40),
+                    const SizedBox(height: 40),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                       child: Row(
@@ -138,7 +138,7 @@ class _Event_ScreenState extends State<Event_Screen> {
                       padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.calendar_today,
                             color: Palette.kToDark,
                             size: 35,
@@ -149,7 +149,7 @@ class _Event_ScreenState extends State<Event_Screen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   "Event Date",
                                   style: TextStyle(
                                       color: Colors.white,
@@ -162,7 +162,7 @@ class _Event_ScreenState extends State<Event_Screen> {
                                   returnWeekDay(widget.timestamp) +
                                       ", " +
                                       returnDay(widget.timestamp),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w300,
                                       fontFamily: 'Arial narrow',
@@ -174,7 +174,7 @@ class _Event_ScreenState extends State<Event_Screen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     GestureDetector(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
@@ -218,7 +218,7 @@ class _Event_ScreenState extends State<Event_Screen> {
                         MapsLauncher.launchQuery(widget.gmaps_address);
                       },
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     GestureDetector(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
@@ -298,7 +298,7 @@ class _Event_ScreenState extends State<Event_Screen> {
                         MapsLauncher.launchQuery(widget.gmaps_address);
                       },
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     Container(
                         alignment: Alignment.centerLeft,
                         child: Padding(
@@ -307,9 +307,21 @@ class _Event_ScreenState extends State<Event_Screen> {
                             onPressed: () {
                               _uploadImages();
                             },
-                            child: Text('Upload'),
+                            child: const Text('Upload Images'),
                           ),
                         )),
+                    Container(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(80, 0, 0, 0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _uploadVideo();
+                            },
+                            child: const Text('Upload Video'),
+                          ),
+                        )),
+                    const SizedBox(height: 10),
                   ],
                 ),
               ),
@@ -328,6 +340,33 @@ class _Event_ScreenState extends State<Event_Screen> {
     );
   }
 
+  void _uploadVideo() async {
+    final GcloudApi gcloud = GcloudApi();
+    List<XFile> videolist = [];
+    await ImagePicker()
+        .pickVideo(source: ImageSource.gallery)
+        .then((video) async {
+      videolist.add(video!);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          duration: Duration(milliseconds: 400),
+          content: Text('Uploading'),
+        ),
+      );
+      if (videolist != null) {
+        await gcloud.spawnclient().whenComplete(() async {
+          await gcloud.saveMany(videolist, widget.name+'/').whenComplete(() {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                duration: Duration(milliseconds: 800),
+                content: Text('Done'),
+              ),
+            );
+          });
+        });
+      }
+    });
+  }
   void _uploadImages() async {
     final GcloudApi gcloud = GcloudApi();
     await ImagePicker().pickMultiImage().then((images) async {

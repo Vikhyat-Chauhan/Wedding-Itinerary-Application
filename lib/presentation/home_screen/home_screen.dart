@@ -27,12 +27,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final List<String> imgList = [
-    'lib/core/assets/images/background_image_1.jpeg',
     'lib/core/assets/images/background_image_2.jpeg',
-    'lib/core/assets/images/background_image_3.jpeg',
     'lib/core/assets/images/background_image_4.jpeg',
-    'lib/core/assets/images/background_image_6.jpeg',
     'lib/core/assets/images/background_image_7.jpeg',
+    'lib/core/assets/images/background_image_8.jpg'
   ];
   @override
   Widget build(BuildContext context) {
@@ -69,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
                     colors: [
-                      Colors.blue[900]!.withOpacity(0.1),
+                      Colors.white.withOpacity(0.0),
                       Colors.black.withOpacity(0.8)
                     ],
                     begin: Alignment.topCenter,

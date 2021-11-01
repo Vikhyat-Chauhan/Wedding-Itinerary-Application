@@ -84,7 +84,7 @@ class GcloudApi {
     return page.next(pageSize: size);
   }
 
-  Future<List<String>> returnFilename(String directory) async {
+  Future<List<String>> returnFilename(String directory) async { //Right now will only allow .jpeg files ot be read , hence putting a filder in reading these files
     if (_client == null)
       _client =
           await auth.clientViaServiceAccount(_credentials, Storage.SCOPES);
@@ -95,7 +95,13 @@ class GcloudApi {
     Stream<BucketEntry> stream = bucket.list(prefix: directory);
     await for (var event in stream) {
       if (event.name != directory) {
-        filename.add(event.name);
+        final type = lookupMimeType(event.name.split('/').last);
+        if(type!.substring(0,5) != "video") {
+          filename.add(event.name);
+        }
+        else{
+          //print("This is a videofile $event");
+        }
       }
     }
     return filename;
