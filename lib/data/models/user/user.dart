@@ -3,7 +3,6 @@
 //     final user = userFromMap(jsonString);
 
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 User userFromMap(Map<String, dynamic> str) => User.fromMap(str);

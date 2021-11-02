@@ -4,13 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weddingitinerary/core/themes/palette.dart';
-import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/bottomnavbar_bloc/bottomnavbar_bloc.dart';
 import 'package:weddingitinerary/presentation/contact_screen/contact_screen.dart';
-import 'package:weddingitinerary/presentation/test_screen/widgets/events_page/events_card.dart';
-import 'package:weddingitinerary/presentation/test_screen/widgets/discover_page/shortcuts_card.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:weddingitinerary/presentation/home_screen/widgets/discover_page/shortcuts_card.dart';
 
 class Shortcut_Card_Row extends StatelessWidget {
   const Shortcut_Card_Row({Key? key}) : super(key: key);

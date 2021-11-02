@@ -4,14 +4,11 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:weddingitinerary/core/constants/strings.dart';
 import 'package:weddingitinerary/data/repositories/mongodb/mongodb_crud.dart';
-import 'package:mongo_dart/mongo_dart.dart' as M;
 import 'package:weddingitinerary/data/models/event/event.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/mongodb_bloc/mongodb_bloc.dart';
-import 'package:weddingitinerary/logic/bloc/user_bloc/user_bloc.dart';
 import 'package:weddingitinerary/logic/cubit/internet_bloc/internet_bloc.dart';
 
 part 'event_bloc_event.dart';

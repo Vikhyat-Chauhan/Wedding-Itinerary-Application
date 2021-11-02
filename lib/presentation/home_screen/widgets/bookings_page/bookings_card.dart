@@ -2,11 +2,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
-import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
-import 'package:marquee/marquee.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 
 class Bookings_Card extends StatelessWidget {
@@ -30,7 +26,6 @@ class Bookings_Card extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(3.0),
         ),
-        color: Palette.kToDark.shade200,
         child: InkWell(
           onTap: () {
             MapsLauncher.launchQuery(location);

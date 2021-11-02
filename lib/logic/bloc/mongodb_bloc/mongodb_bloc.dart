@@ -31,7 +31,7 @@ class MongodbBloc extends Bloc<MongodbBlocEvent, MongodbBlocState> {
     //if (await internetWorking()) {
     emit(state.copyWith(status: MongodbStatus.working));
     //CONNECT EVENT
-    if (event is Connect) { print("Connect event");
+    if (event is Connect) {
       if (state.status != MongodbStatus.connected) {
         try {
           emit(state.copyWith(status: MongodbStatus.working));

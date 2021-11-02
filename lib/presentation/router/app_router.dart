@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:weddingitinerary/presentation/event_screen/event_screen.dart';
+import 'package:weddingitinerary/presentation/launch_screen/launch_screen.dart';
 import 'package:weddingitinerary/presentation/home_screen/home_screen.dart';
-import 'package:weddingitinerary/presentation/test_screen/test_screen.dart';
 import '../../core/constants/strings.dart';
 import '../../core/exceptions/route_exception.dart';
 
@@ -10,13 +9,13 @@ class AppRouter {
     switch (routeSettings.name) {
       case '/':
         return MaterialPageRoute(
-          builder: (_) => const HomeScreen(
+          builder: (_) => const LaunchScreen(
             title: Strings.homeScreenTitle,
           ),
         );
-      case '/test':
+      case '/home_screen':
         return MaterialPageRoute(
-          builder: (_) => const TestScreen(
+          builder: (_) => const HomeScreen(
             title: "Just testing",
           ),
         );

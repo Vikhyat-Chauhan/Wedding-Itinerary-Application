@@ -167,14 +167,14 @@ class GcloudApi {
     required int startIndex,
     required int readsize,
   }) async {
-    print(startIndex);
-    print(readsize);
+    //print(startIndex);
+    //print(readsize);
     List<String> filename = await returnFilename(directory);
     List<XFile> files = [];
     for (int i = startIndex; i < (readsize); i++) {
       if (i < filename.length) {
         files.add(await writeToFile(await read(filename[i]), filename[i]));
-        print(i);
+        //print(i);
       }
     }
     return files;

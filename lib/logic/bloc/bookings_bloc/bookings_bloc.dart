@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weddingitinerary/core/constants/strings.dart';
 import 'package:weddingitinerary/data/models/bookings/bookings.dart';
 import 'package:weddingitinerary/data/repositories/mongodb/mongodb_crud.dart';
-import 'package:mongo_dart/mongo_dart.dart' as M;
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/mongodb_bloc/mongodb_bloc.dart';
 import 'package:weddingitinerary/logic/cubit/internet_bloc/internet_bloc.dart';

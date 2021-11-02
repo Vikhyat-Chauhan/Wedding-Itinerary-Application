@@ -4,13 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
-import 'package:weddingitinerary/data/repositories/gcloud/gcloud.dart';
-import 'package:weddingitinerary/presentation/test_screen/widgets/top_bar.dart';
-import 'package:maps_launcher/maps_launcher.dart';
+import 'package:weddingitinerary/presentation/home_screen/widgets/top_bar.dart';
 
 class Contact_Screen extends StatefulWidget {
   const Contact_Screen({

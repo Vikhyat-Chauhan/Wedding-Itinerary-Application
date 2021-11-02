@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
 
 class AppTheme {
@@ -55,5 +54,10 @@ class AppTheme {
       button: TextStyle(fontWeight: FontWeight.normal, fontFamily: "Railway",),
     ),
     appBarTheme: const AppBarTheme(backgroundColor: Colors.transparent,elevation: 0.0,toolbarHeight: 0.0),
+    progressIndicatorTheme: ProgressIndicatorThemeData(color: Palette.kToDark.shade50, ),
+    elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Palette.kToDark.shade200),),),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(backgroundColor: Palette.kToDark.shade200),
+    popupMenuTheme: PopupMenuThemeData(color: Palette.kToDark.shade200),
+    cardTheme: CardTheme(color: Palette.kToDark.shade200),
   );
 }

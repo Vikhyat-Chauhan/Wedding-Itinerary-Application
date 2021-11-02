@@ -3,7 +3,6 @@
 //     final bookings = bookingsFromMap(jsonString);
 
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 import 'dart:convert';
 import 'package:mongo_dart/mongo_dart.dart' as M;
 

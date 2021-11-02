@@ -4,12 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weddingitinerary/core/themes/palette.dart';
-import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/event_bloc/event_bloc.dart';
-import 'package:weddingitinerary/presentation/test_screen/widgets/events_page/events_card.dart';
-import 'package:weddingitinerary/presentation/test_screen/widgets/events_page/events_card_wide.dart';
-import 'package:weddingitinerary/data/models/event/event.dart';
+import 'package:weddingitinerary/presentation/home_screen/widgets/events_page/events_card_wide.dart';
 
 class Events_Card_Column extends StatelessWidget {
   Events_Card_Column({Key? key}) : super(key: key);

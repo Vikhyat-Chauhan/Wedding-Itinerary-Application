@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
-import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/locations_bloc/locations_bloc.dart';
 import 'package:marquee/marquee.dart';
 import 'package:weddingitinerary/presentation/event_screen/event_screen.dart';
@@ -25,7 +24,6 @@ class Events_Card extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
-        color: Palette.kToDark.shade200,
         child: InkWell(
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => Event_Screen(name: name, timestamp: timestamp, location: BlocProvider.of<LocationsBloc>(context).state.locations.firstWhere((element) => element.id.toHexString() == location).name , imageiurl: imageiurl, gmaps_address: BlocProvider.of<LocationsBloc>(context).state.locations.firstWhere((element) => element.id.toHexString() == location).location,)));

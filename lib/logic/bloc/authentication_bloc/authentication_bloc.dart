@@ -11,7 +11,6 @@ import 'package:weddingitinerary/data/dataproviders/token_storage.dart';
 import 'package:weddingitinerary/data/models/user/user.dart';
 import 'package:weddingitinerary/data/repositories/mongodb/mongodb_crud.dart';
 import 'package:weddingitinerary/logic/bloc/mongodb_bloc/mongodb_bloc.dart';
-import 'package:weddingitinerary/logic/bloc/user_bloc/user_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:weddingitinerary/logic/cubit/internet_bloc/internet_bloc.dart';
 

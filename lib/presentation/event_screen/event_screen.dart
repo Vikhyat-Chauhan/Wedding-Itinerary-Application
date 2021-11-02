@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/data/repositories/gcloud/gcloud.dart';
-import 'package:weddingitinerary/presentation/test_screen/widgets/top_bar.dart';
+import 'package:weddingitinerary/presentation/home_screen/widgets/top_bar.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 
 class Event_Screen extends StatefulWidget {

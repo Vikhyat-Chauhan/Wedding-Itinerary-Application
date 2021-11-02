@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:weddingitinerary/presentation/test_screen/widgets/events_page/events_card_column.dart';
-import 'package:weddingitinerary/presentation/test_screen/widgets/events_page/events_card_row.dart';
-import 'package:weddingitinerary/presentation/test_screen/widgets/discover_page/shortcuts_card_row.dart';
-import 'package:weddingitinerary/presentation/test_screen/widgets/top_bar.dart';
+import 'package:weddingitinerary/presentation/home_screen/widgets/events_page/events_card_column.dart';
+import 'package:weddingitinerary/presentation/home_screen/widgets/top_bar.dart';
 
 class Events_Page extends StatelessWidget {
   const Events_Page({Key? key}) : super(key: key);

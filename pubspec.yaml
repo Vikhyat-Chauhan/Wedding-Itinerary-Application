@@ -21,7 +21,6 @@ dependencies:
   shared_preferences: #for storing local data
   equatable:
   custom_navigation_bar: ^0.8.2
-  toggle_switch:
   hexcolor: ^2.0.5
   mongo_dart:
   objectid: 2.0.0

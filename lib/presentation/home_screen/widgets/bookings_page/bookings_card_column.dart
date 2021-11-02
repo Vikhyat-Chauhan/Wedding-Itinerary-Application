@@ -1,11 +1,8 @@
-import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/data/models/bookings/bookings.dart';
 import 'package:weddingitinerary/logic/bloc/locations_bloc/locations_bloc.dart';
 

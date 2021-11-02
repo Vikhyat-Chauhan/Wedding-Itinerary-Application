@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:weddingitinerary/data/repositories/gcloud/gcloud.dart';
@@ -24,7 +22,8 @@ class ImagesBloc extends Bloc<ImagesBlocEvent, ImagesBlocState> {
 
     _internetBlocSubscription = _internetBloc.stream.listen((state) async {
       if (state.status == InternetStatus.connected) {
-        emit(ImagesBlocState(status: ImagesStatus.success));
+        await gcloud.spawnclient();
+        emit(ImagesBlocState(status: ImagesStatus.success,));
       }
       else if(state.status == InternetStatus.disconnected) {
         emit(ImagesBlocState(status: ImagesStatus.serviceunavailable));

@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:async';
@@ -22,17 +21,15 @@ class InternetBloc extends Bloc<InternetBlocEvent, InternetBlocState> {
     return super.close();
   }
 
-  Future<void> _initAction()  async { print("internet init state");
+  Future<void> _initAction()  async {
     // actively listen for status updates
     listener = InternetConnectionChecker().onStatusChange.listen(
       (InternetConnectionStatus status) {
         switch (status) {
           case InternetConnectionStatus.connected:
-            print("Connected");
             emit(InternetBlocState(status: InternetStatus.connected));
             break;
           case InternetConnectionStatus.disconnected:
-            print("Disconnected");
             emit(InternetBlocState(status: InternetStatus.disconnected));
             break;
         }

@@ -4,8 +4,8 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/data/models/bookings/bookings.dart';
 import 'package:weddingitinerary/logic/bloc/bookings_bloc/bookings_bloc.dart';
-import 'package:weddingitinerary/presentation/test_screen/widgets/bookings_page/bookings_card_column.dart';
-import 'package:weddingitinerary/presentation/test_screen/widgets/bookings_page/locations_card_column.dart';
+import 'package:weddingitinerary/presentation/home_screen/widgets/bookings_page/bookings_card_column.dart';
+import 'package:weddingitinerary/presentation/home_screen/widgets/bookings_page/locations_card_column.dart';
 
 import '../top_bar.dart';
 
@@ -103,15 +103,14 @@ class _Bookings_PageState extends State<Bookings_Page> {
         ),
         if(!hideWidget)
           Positioned.fill(
-              child: Align(alignment: Alignment(1, 1),
+              child: Align(alignment: Alignment(1, 0.07),
                   child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 10, 10),
+                padding: const EdgeInsets.fromLTRB(0, 0, 20, 10),
                 child: FloatingActionButton(onPressed: (){
                   hideWidget = true;
                   setState(() {
                   });
                 },child: const Icon(Icons.search),
-                  backgroundColor: Palette.kToDark.shade200,
                   tooltip: 'Search',),
               )),),
       ],

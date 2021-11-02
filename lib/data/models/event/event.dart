@@ -2,7 +2,6 @@
 //
 //     final event = eventFromMap(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 import 'package:mongo_dart/mongo_dart.dart' as M;
 

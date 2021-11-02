@@ -7,16 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:weddingitinerary/core/themes/palette.dart';
 import 'package:weddingitinerary/data/repositories/gcloud/gcloud.dart';
 import 'package:weddingitinerary/logic/bloc/event_bloc/event_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/images_bloc/images_bloc.dart';
-import 'package:weddingitinerary/logic/bloc/images_bloc/images_bloc.dart';
-import 'package:weddingitinerary/presentation/test_screen/widgets/bookings_page/images_gridview.dart';
-import 'package:weddingitinerary/presentation/test_screen/widgets/images_page/post_list_item.dart';
-import 'package:weddingitinerary/presentation/test_screen/widgets/top_bar.dart';
+import 'package:weddingitinerary/presentation/home_screen/widgets/images_page/post_list_item.dart';
+import 'package:weddingitinerary/presentation/home_screen/widgets/top_bar.dart';
 
 import 'bottom_loader.dart';
 
@@ -59,7 +56,7 @@ class _Images_PageState extends State<Images_Page> {
             child: Container(
               alignment: Alignment.topLeft,
               child: const Text(
-                "Upload Images",
+                "Upload Images & Videos",
                 style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w300,
@@ -163,7 +160,6 @@ class _Images_PageState extends State<Images_Page> {
                             });
                           },
                           child: const Icon(Icons.arrow_back),
-                          backgroundColor: Palette.kToDark.shade50,
                           tooltip: 'BACK',
                         ),
                       ),
@@ -179,7 +175,6 @@ class _Images_PageState extends State<Images_Page> {
                                 viewingimagefile.path);
                           },
                           child: const Icon(Icons.download),
-                          backgroundColor: Palette.kToDark.shade50,
                           tooltip: 'Download',
                         ),
                       ),
