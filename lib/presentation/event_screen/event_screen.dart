@@ -331,7 +331,6 @@ class _Event_ScreenState extends State<Event_Screen> {
                 Navigator.pop(context);
               },
               child: const Icon(Icons.arrow_back),
-              backgroundColor: Palette.kToDark.shade50,
               tooltip: 'BACK',
             ),
           ),

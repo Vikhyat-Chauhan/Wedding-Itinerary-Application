@@ -74,7 +74,7 @@ class _Contact_ScreenState extends State<Contact_Screen> {
                       child: Container(
                         alignment: AlignmentDirectional.topStart,
                         child: const Text(
-                          "Helpdesk",
+                          "Wedding Support",
                           style: TextStyle(
                               fontSize: 40,
                               fontWeight: FontWeight.w300,
@@ -157,7 +157,7 @@ class _Contact_ScreenState extends State<Contact_Screen> {
                       child: Container(
                         alignment: AlignmentDirectional.topStart,
                         child: const Text(
-                          "Developer",
+                          "IT Support",
                           style: TextStyle(
                               fontSize: 40,
                               fontWeight: FontWeight.w300,
@@ -174,7 +174,7 @@ class _Contact_ScreenState extends State<Contact_Screen> {
                           width: 230,
                           color:Colors.white,),),
                     ),
-                    SizedBox(height: 35),
+                    SizedBox(height: 25),
                     Column(
                       children: [
                           Column(
@@ -204,7 +204,7 @@ class _Contact_ScreenState extends State<Contact_Screen> {
                                           ),
                                           SizedBox(height: 2),
                                           Text(
-                                            "Developer",
+                                            "Founder \nThenextmove Electronics",
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w300,
@@ -304,7 +304,6 @@ class _Contact_ScreenState extends State<Contact_Screen> {
                 Navigator.pop(context);
               },
               child: const Icon(Icons.arrow_back),
-              backgroundColor: Palette.kToDark.shade50,
               tooltip: 'BACK',
             ),
           ),
