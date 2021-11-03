@@ -34,12 +34,19 @@ class Locations_Card_Column extends StatelessWidget {
           ),
           const SizedBox(height: 15),
           BlocBuilder<LocationsBloc,LocationsBlocState>(
-            buildWhen: (previous,current){
-              //print(current.status);
-              //print(previous.locations.first.name);print(current.locations.first.name);
-              //print(previous.locations == current.locations);
-              return false;//listEquals(previous.locations, current.locations);
-            },
+              buildWhen: (previous, current){
+                if(current.status == LocationsStatus.normal){
+                  if(current.locations.length != 0){
+                    return true;
+                  }
+                  else{
+                    return false;
+                  }
+                }
+                else{
+                  return false;
+                }
+              },
             builder: (context, state) {
               //print("-------------------------------Building------------------------------");
               return SingleChildScrollView(

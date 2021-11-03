@@ -31,28 +31,38 @@ class Events_Card_Row extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          BlocBuilder<EventBloc,EventBlocState>(
-            buildWhen: (previous, current){
-              if(current.events.length > 0) {
+          BlocBuilder<EventBloc, EventBlocState>(
+              buildWhen: (previous, current) {
+            if (current.status == EventStatus.normal) {
+              if (current.events.length != 0) {
                 return true;
-              }
-              else{
+              } else {
                 return false;
               }
-            },
-            builder: (context, state) {
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    for (int i=0; i<state.events.length; i++)
-                      if((DateTime.now().millisecondsSinceEpoch) < int.parse(state.events[i].timestamp)) Events_Card(location: state.events[i].location, name: state.events[i].name, imageiurl: state.events[i].image, timestamp: state.events[i].timestamp, scroll: (state.events[i].name.length>15)? true:false,),
-                  ],
-                ),
-              );
+            } else {
+              return false;
             }
-          ),
+          }, builder: (context, state) {
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  for (int i = 0; i < state.events.length; i++)
+                    if ((DateTime.now().millisecondsSinceEpoch) <
+                        int.parse(state.events[i].timestamp))
+                      Events_Card(
+                        location: state.events[i].location,
+                        name: state.events[i].name,
+                        imageiurl: state.events[i].image,
+                        timestamp: state.events[i].timestamp,
+                        scroll:
+                            (state.events[i].name.length > 15) ? true : false,
+                      ),
+                ],
+              ),
+            );
+          }),
         ],
       ),
     );

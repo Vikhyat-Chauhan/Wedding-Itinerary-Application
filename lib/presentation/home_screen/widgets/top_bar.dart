@@ -31,10 +31,10 @@ class Top_Bar extends StatelessWidget {
                         fontWeight: FontWeight.w200,
                         fontFamily: 'Arial narrow'),
                   ),
-                  Text(
+                  const Text(
                     Strings.highlight,
                     style: TextStyle(
-                        fontSize: 32,
+                        fontSize: 35,
                         fontWeight: FontWeight.w400,
                         fontFamily: 'Arial narrow'),
                   ),
@@ -46,7 +46,6 @@ class Top_Bar extends StatelessWidget {
             builder: (context, state) {
               return PopupMenuButton(
                 offset: const Offset(-10, 40),
-                color: Palette.kToDark,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50)),
                 child: Container(
@@ -74,7 +73,7 @@ class Top_Bar extends StatelessWidget {
                         ),
                         onTap: () {
                           BlocProvider.of<AuthenticationBloc>(context)
-                              .add(Logout()); print("Here");
+                              .add(Logout());
                           Navigator.popAndPushNamed(context, '/');
                         },
                       ),

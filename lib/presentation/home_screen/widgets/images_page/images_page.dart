@@ -282,7 +282,6 @@ class _Images_PageState extends State<Images_Page> {
     if (_scrollController.offset >=
             _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
-      print("RUNNING LOAD MORE");
       if (!imagesBloc.state.hasReachedMax) {
         BlocProvider.of<ImagesBloc>(context)
             .add(const ImageFetch(directory: 'Wedding Ceremony/', readmax: 12));

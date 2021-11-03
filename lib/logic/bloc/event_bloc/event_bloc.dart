@@ -33,9 +33,10 @@ class EventBloc extends Bloc<EventBlocEvent, EventBlocState> {
     _internetBlocSubscription = _internetBloc.stream.listen((state) async {
       if (state.status == InternetStatus.connected) {
         emit(EventBlocState(status: EventStatus.normal));
+        add(EventRefresh());
       }
       else if(state.status == InternetStatus.disconnected) {
-        add(EventRefresh());
+        emit(EventBlocState(status: EventStatus.serviceunavailable));
       }
     });
   }

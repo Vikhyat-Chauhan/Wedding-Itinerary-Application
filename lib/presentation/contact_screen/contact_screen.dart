@@ -26,7 +26,7 @@ class _Contact_ScreenState extends State<Contact_Screen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage("lib/core/assets/images/background_image_4.jpeg"),
           fit: BoxFit.cover,
@@ -40,13 +40,13 @@ class _Contact_ScreenState extends State<Contact_Screen> {
             body: SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+                padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
                 child: Column(
                   children: [
                     Top_Bar(
                       pagename: 'Contacts',
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                       child: SizedBox(
@@ -68,21 +68,30 @@ class _Contact_ScreenState extends State<Contact_Screen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 0),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                       child: Container(
                         alignment: AlignmentDirectional.topStart,
-                        child: Text(
-                          "Contacts",
-                          style: const TextStyle(
+                        child: const Text(
+                          "Helpdesk",
+                          style: TextStyle(
                               fontSize: 40,
                               fontWeight: FontWeight.w300,
                               fontFamily: 'Arial narrow'),
                         ),
                       ),
                     ),
-                    SizedBox(height: 40),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding:EdgeInsets.fromLTRB(20, 10, 0, 0),
+                        child:Container(
+                          height:1.0,
+                          width: 230,
+                          color:Colors.white,),),
+                    ),
+                    SizedBox(height: 25),
                     Column(
                       children: [
                         for(int i=0; i<contacts.length;i++)
@@ -105,7 +114,7 @@ class _Contact_ScreenState extends State<Contact_Screen> {
                                       children: [
                                         Text(
                                           contacts[i].name,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.w400,
                                               fontFamily: 'Arial narrow',
@@ -135,10 +144,153 @@ class _Contact_ScreenState extends State<Contact_Screen> {
                                     onPressed: () {
                                       _makePhoneCall('tel:' + contacts[i].phoneno.toString());
                                     },
-                                    child: Text('Call Phone',),
+                                    child: const Text('Call Phone',),
                                   ),
                                 )),
-                            SizedBox(height: 25),
+                            const SizedBox(height: 25),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                      child: Container(
+                        alignment: AlignmentDirectional.topStart,
+                        child: const Text(
+                          "Developer",
+                          style: TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.w300,
+                              fontFamily: 'Arial narrow'),
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding:EdgeInsets.fromLTRB(20, 10, 0, 0),
+                        child:Container(
+                          height:1.0,
+                          width: 230,
+                          color:Colors.white,),),
+                    ),
+                    SizedBox(height: 35),
+                    Column(
+                      children: [
+                          Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.architecture,
+                                      color: Palette.kToDark,
+                                      size: 35,
+                                    ),
+                                    const SizedBox(width: 25),
+                                    Container(
+                                      alignment: AlignmentDirectional.topStart,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: const [
+                                          Text(
+                                            "Vikhyat Chauhan",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w400,
+                                                fontFamily: 'Arial narrow',
+                                                fontSize: 18),
+                                          ),
+                                          SizedBox(height: 2),
+                                          Text(
+                                            "Developer",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w300,
+                                                fontFamily: 'Arial narrow',
+                                                fontSize: 15),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(80, 0, 0, 0),
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        String x = "mailto:vikhyat.chauhan@gmail.com?subject=Regarding : Ritika and Durgesh Wedding Itinerary Application";// e.g. mailto:smith@example.org?subject=News&body=New%20plugin";
+                                        await _makeEmail(x);
+                                      },
+                                      child: const Text('Email',),
+                                    ),
+                                  )),
+                            ],
+                          ),
+                      ],
+                    ),
+                    SizedBox(height: 15),
+                    Column(
+                      children: [
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.architecture,
+                                    color: Palette.kToDark,
+                                    size: 35,
+                                  ),
+                                  const SizedBox(width: 25),
+                                  Container(
+                                    alignment: AlignmentDirectional.topStart,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: const [
+                                        Text(
+                                          "Durgesh Pirtani",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w400,
+                                              fontFamily: 'Arial narrow',
+                                              fontSize: 18),
+                                        ),
+                                        SizedBox(height: 2),
+                                        Text(
+                                          "Technical Product Manager",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w300,
+                                              fontFamily: 'Arial narrow',
+                                              fontSize: 15),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(80, 0, 0, 0),
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      String x = "mailto:durgesh.pirtani@gmail.com?subject=Regarding : Ritika and Durgesh Wedding Itinerary Application";// e.g. mailto:smith@example.org?subject=News&body=New%20plugin";
+                                      await _makeEmail(x);
+                                    },
+                                    child: const Text('Email',),
+                                  ),
+                                )),
+                            const SizedBox(height: 25),
                           ],
                         ),
                       ],
@@ -182,6 +334,14 @@ class _Contact_ScreenState extends State<Contact_Screen> {
 }
 
 Future<void> _makePhoneCall(String url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+
+Future<void> _makeEmail(String url) async {
   if (await canLaunch(url)) {
     await launch(url);
   } else {
