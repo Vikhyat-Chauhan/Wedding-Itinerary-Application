@@ -186,7 +186,7 @@ class _Images_PageState extends State<Images_Page> {
     );
   }
 
-  Future _getStoragePermission() async {
+  Future<void> _getStoragePermission() async {
     if (await Permission.storage.request().isGranted) {
       setState(() {
         permissionGranted = true;
@@ -225,35 +225,57 @@ class _Images_PageState extends State<Images_Page> {
     }
   }
 
-  void _uploadImages(String directory) async {
+  Future<void> _uploadImages(String directory) async {
     final GcloudApi gcloud = GcloudApi();
+    await gcloud.spawnclient();
     await ImagePicker().pickMultiImage().then((images) async {
       if (images != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            duration: Duration(milliseconds: 400),
-            content: Text('Uploading'),
-          ),
-        );
-        await gcloud.spawnclient().whenComplete(() async {
-          await gcloud.saveMany(images, directory).whenComplete(() {
+        if(images.length <= 30) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              duration: Duration(milliseconds: 400),
+              content: Text('Uploading'),
+            ),
+          );
+          try {
+            await gcloud.spawnclient().whenComplete(() async {
+              await gcloud.saveMany(images, directory).whenComplete(() {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    duration: Duration(milliseconds: 800),
+                    content: Text('Done'),
+                  ),
+                );
+              });
+            });
+          }
+          catch (_) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 duration: Duration(milliseconds: 800),
-                content: Text('Done'),
+                content: Text('Error, select less photos.'),
               ),
             );
-          });
-        });
+          }
+        }
+        else{
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              duration: Duration(milliseconds: 800),
+              content: Text('Error, Max 30 files allowed'),
+            ),
+          );
+        }
       }
     });
   }
 
-  void _uploadVideo(String directory) async {
+  Future<void> _uploadVideo(String directory) async {
     final GcloudApi gcloud = GcloudApi();
+    await gcloud.spawnclient();
     List<XFile> videolist = [];
     await ImagePicker()
-        .pickVideo(source: ImageSource.gallery)
+        .pickVideo(source: ImageSource.gallery,)
         .then((video) async {
       videolist.add(video!);
       if (videolist != null) {
@@ -263,16 +285,26 @@ class _Images_PageState extends State<Images_Page> {
             content: Text('Uploading'),
           ),
         );
-        await gcloud.spawnclient().whenComplete(() async {
-          await gcloud.saveMany(videolist, directory).whenComplete(() {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                duration: Duration(milliseconds: 800),
-                content: Text('Done'),
-              ),
-            );
+        try {
+          await gcloud.spawnclient().whenComplete(() async {
+            await gcloud.saveMany(videolist, directory).whenComplete(() {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  duration: Duration(milliseconds: 800),
+                  content: Text('Done'),
+                ),
+              );
+            });
           });
-        });
+        }
+        catch(_){
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              duration: Duration(milliseconds: 800),
+              content: Text('Error Uploading, file too large'),
+            ),
+          );
+        }
       }
     });
   }
@@ -370,8 +402,8 @@ class _Images_PageState extends State<Images_Page> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(5,0,0,0),
                       child: ElevatedButton(
-                        onPressed: () {
-                          _uploadImages(path);
+                        onPressed: () async{
+                          await _uploadImages(path);
                           Navigator.of(context).pop();
                         },
                         child:  const Padding(
@@ -389,8 +421,8 @@ class _Images_PageState extends State<Images_Page> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0,0,5,0),
                       child: ElevatedButton(
-                        onPressed: () {
-                          _uploadVideo(path);
+                        onPressed: () async{
+                          await _uploadVideo(path);
                           Navigator.of(context).pop();
                         },
                         child:  const Padding(

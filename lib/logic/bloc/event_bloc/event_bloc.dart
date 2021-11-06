@@ -17,26 +17,25 @@ part 'event_bloc_state.dart';
 class EventBloc extends Bloc<EventBlocEvent, EventBlocState> {
   final MongodbBloc MongoDbBloc;
   final AuthenticationBloc authBloc ;
-  final InternetBloc _internetBloc;
   late final StreamSubscription authBlocSubscription;
-  late final StreamSubscription _internetBlocSubscription;
+  late final StreamSubscription _mongodbBlocSubscription;
 
-  EventBloc(this.MongoDbBloc, this.authBloc, this._internetBloc) : super(const EventBlocState()) {
+  EventBloc(this.MongoDbBloc, this.authBloc,) : super(const EventBlocState()) {
     on<EventBlocEvent>(_eventEventHandler, transformer: droppable());
+
+    _mongodbBlocSubscription = MongoDbBloc.stream.listen((state) async {
+      if (state.status == MongodbStatus.connected) {
+        emit(EventBlocState().copyWith(status: EventStatus.normal));
+        //emit(BookingsBlocState(status: BookingsStatus.working));
+      }
+      else if(state.status == MongodbStatus.serviceunavailable) {
+        emit(EventBlocState().copyWith(status: EventStatus.serviceunavailable));
+      }
+    });
 
     authBlocSubscription = authBloc.stream.listen((state) async {
       if (state.status == AuthenticationStatus.authenticated) {
         add(EventRefresh());
-      }
-    });
-
-    _internetBlocSubscription = _internetBloc.stream.listen((state) async {
-      if (state.status == InternetStatus.connected) {
-        emit(EventBlocState(status: EventStatus.normal));
-        add(EventRefresh());
-      }
-      else if(state.status == InternetStatus.disconnected) {
-        emit(EventBlocState(status: EventStatus.serviceunavailable));
       }
     });
   }
@@ -64,7 +63,8 @@ class EventBloc extends Bloc<EventBlocEvent, EventBlocState> {
 
   @override
   Future<void> close() {
-    _internetBlocSubscription.cancel();
+    _mongodbBlocSubscription.cancel();
+    authBlocSubscription.cancel();
     return super.close();
   }
 

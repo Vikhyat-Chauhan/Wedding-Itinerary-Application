@@ -304,8 +304,8 @@ class _Event_ScreenState extends State<Event_Screen> {
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(80, 0, 0, 0),
                           child: ElevatedButton(
-                            onPressed: () {
-                              _uploadImages();
+                            onPressed: () async{
+                              await _uploadImages();
                             },
                             child: const Text('Upload Images'),
                           ),
@@ -315,8 +315,8 @@ class _Event_ScreenState extends State<Event_Screen> {
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(80, 0, 0, 0),
                           child: ElevatedButton(
-                            onPressed: () {
-                              _uploadVideo();
+                            onPressed: () async {
+                              await _uploadVideo();
                             },
                             child: const Text('Upload Video'),
                           ),
@@ -339,11 +339,12 @@ class _Event_ScreenState extends State<Event_Screen> {
     );
   }
 
-  void _uploadVideo() async {
+  Future<void> _uploadVideo() async {
     final GcloudApi gcloud = GcloudApi();
+    await gcloud.spawnclient();
     List<XFile> videolist = [];
     await ImagePicker()
-        .pickVideo(source: ImageSource.gallery)
+        .pickVideo(source: ImageSource.gallery,maxDuration: Duration(minutes: 2))
         .then((video) async {
       videolist.add(video!);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -353,21 +354,34 @@ class _Event_ScreenState extends State<Event_Screen> {
         ),
       );
       if (videolist != null) {
-        await gcloud.spawnclient().whenComplete(() async {
-          await gcloud.saveMany(videolist, widget.name+'/').whenComplete(() {
+          try {
+            await gcloud.spawnclient().whenComplete(() async {
+              await gcloud.saveMany(videolist, widget.name + '/')
+                  .whenComplete(() {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    duration: Duration(milliseconds: 800),
+                    content: Text('Done'),
+                  ),
+                );
+              });
+            });
+          }
+          catch (_) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 duration: Duration(milliseconds: 800),
-                content: Text('Done'),
+                content: Text('Error, file too large.'),
               ),
             );
-          });
-        });
+          }
       }
     });
   }
-  void _uploadImages() async {
+
+  Future<void> _uploadImages() async {
     final GcloudApi gcloud = GcloudApi();
+    await gcloud.spawnclient();
     await ImagePicker().pickMultiImage().then((images) async {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -376,16 +390,36 @@ class _Event_ScreenState extends State<Event_Screen> {
         ),
       );
       if (images != null) {
-        await gcloud.spawnclient().whenComplete(() async {
-          await gcloud.saveMany(images, widget.name+'/').whenComplete(() {
+        if (images.length <= 30) {
+          try {
+            await gcloud.spawnclient().whenComplete(() async {
+              await gcloud.saveMany(images, widget.name + '/').whenComplete(() {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    duration: Duration(milliseconds: 800),
+                    content: Text('Done'),
+                  ),
+                );
+              });
+            });
+          }
+          catch (_) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 duration: Duration(milliseconds: 800),
-                content: Text('Done'),
+                content: Text('Error, select less photos.'),
               ),
             );
-          });
-        });
+          }
+        }
+      }
+      else{
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(milliseconds: 800),
+            content: Text('Error, Max 30 files allowed'),
+          ),
+        );
       }
     });
   }

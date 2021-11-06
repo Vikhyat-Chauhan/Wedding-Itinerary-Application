@@ -125,23 +125,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    _internetBloc = BlocProvider.of<InternetBloc>(context);
-    _internetStream = _internetBloc.stream.listen((state) {
-      if(state.status == InternetStatus.connected){
-        if ((BlocProvider.of<MongodbBloc>(context).state.status !=
-            MongodbStatus.connected) &
-        (BlocProvider.of<MongodbBloc>(context).state.status !=
-            MongodbStatus.initial) &
-        (BlocProvider.of<MongodbBloc>(context).state.status !=
-            MongodbStatus.working)) {
-          BlocProvider.of<MongodbBloc>(context).add(Connect());
-        }
-
-        BlocProvider.of<ImagesBloc>(context).add(ImageBlocInitial());
-      }
-      else if(state.status == InternetStatus.disconnected){
-      }
-    });
     const thirtySec = Duration(seconds: 30);
     mongodbautoconnectTimer = Timer.periodic(thirtySec, (Timer t) {
       var state = BlocProvider.of<MongodbBloc>(context).state.status;
@@ -210,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         }
       });
     } else if (state == AppLifecycleState.inactive) {
-    } else if (state == AppLifecycleState.paused) {
+    } else if (state == AppLifecycleState.paused) { print("Pasued State");
       mongodbautoconnectTimer.cancel();
       eventrefreshTimer.cancel();
       bookingrefreshTimer.cancel();
@@ -220,7 +203,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-
     WidgetsBinding.instance!.removeObserver(this);
     BackButtonInterceptor.remove(backInterceptor);
     super.dispose();

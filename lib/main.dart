@@ -48,17 +48,17 @@ class weddingitinerary extends StatelessWidget {
         ),
         BlocProvider(
           create: (BuildContext context) =>
-              EventBloc(BlocProvider.of<MongodbBloc>(context),BlocProvider.of<AuthenticationBloc>(context),BlocProvider.of<InternetBloc>(context)),
+              EventBloc(BlocProvider.of<MongodbBloc>(context),BlocProvider.of<AuthenticationBloc>(context)),
           lazy: false,
         ),
         BlocProvider(
           create: (BuildContext context) =>
-              BookingsBloc(BlocProvider.of<InternetBloc>(context),BlocProvider.of<MongodbBloc>(context),BlocProvider.of<AuthenticationBloc>(context),),
+              BookingsBloc(BlocProvider.of<MongodbBloc>(context),BlocProvider.of<AuthenticationBloc>(context),),
           lazy: false,
         ),
         BlocProvider(
           create: (BuildContext context) =>
-              LocationsBloc(BlocProvider.of<InternetBloc>(context),BlocProvider.of<MongodbBloc>(context),BlocProvider.of<AuthenticationBloc>(context)),
+              LocationsBloc(BlocProvider.of<MongodbBloc>(context),BlocProvider.of<AuthenticationBloc>(context)),
           lazy: false,
         ),
         BlocProvider(

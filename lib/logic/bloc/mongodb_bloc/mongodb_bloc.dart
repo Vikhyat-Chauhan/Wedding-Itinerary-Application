@@ -39,7 +39,7 @@ class MongodbBloc extends Bloc<MongodbBlocEvent, MongodbBlocState> {
           emit(state.copyWith(status: MongodbStatus.connected));
         } catch (_) {
           print(_);
-          emit(state.copyWith(status: MongodbStatus.undefined));
+          emit(state.copyWith(status: MongodbStatus.serviceunavailable));
         }
       }
     }
@@ -51,7 +51,7 @@ class MongodbBloc extends Bloc<MongodbBlocEvent, MongodbBlocState> {
           emit(state.copyWith(status: MongodbStatus.disconnected));
         } catch (_) {
           print(_);
-          emit(state.copyWith(status: MongodbStatus.undefined));
+          emit(state.copyWith(status: MongodbStatus.serviceunavailable));
         }
       }
     }

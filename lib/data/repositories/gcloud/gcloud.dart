@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:googleapis_auth/auth_io.dart' as auth;
 import 'package:gcloud/storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -55,13 +56,30 @@ class GcloudApi {
           await auth.clientViaServiceAccount(_credentials, Storage.SCOPES);
     images.forEach((element) async {
       if (element != null) {
+        //original processing
         var _image = File(element.path);
         var _imageBytes = _image.readAsBytesSync();
         String _imageName = _image.path.split('/').last;
+        //save original
         await save(
           directory + _imageName,
           _imageBytes,
         );
+        final type = lookupMimeType(_imageName.split('/').last);
+        if(type!.substring(0,5) != "video") {
+          //chaching processing
+          await compressFile(File(element.path)).then((_compressedimage) {
+            _imageBytes = _compressedimage.readAsBytesSync();
+          });
+          //save compressed
+          await save(
+            "compressed" + directory + _imageName,
+            _imageBytes,
+          );
+        }
+        else{
+          print("This is a videofile, not compressing");
+        }
       } else {
         print('No image selected.');
       }
@@ -125,7 +143,7 @@ class GcloudApi {
           }
         });
       }
-    });
+    }); print(filenames);
     return filenames;
   }
 
@@ -139,7 +157,11 @@ class GcloudApi {
     var bucket = storage.bucket('ritikawedding');
     Stream<BucketEntry> stream = bucket.list(prefix: '');
     await for (var event in stream) {
-      if (!event.isObject) foldername.add(event.name);
+      if (!event.isObject){ // filter to only allow folders
+        if(event.name.startsWith("compressed")) { // filter to only allow compressed folders
+          foldername.add(event.name);
+        }
+      }
     }
     return foldername;
   }
@@ -210,5 +232,14 @@ class GcloudApi {
   Future<Uint8List> readFromFile(File file) async {
     var contents = await file.readAsBytes();
     return (contents);
+  }
+
+  Future<File> compressFile(File file,) async{
+    String compressedpath = (file.absolute.path.substring(0,file.path.lastIndexOf('/')+1) + "compressed" + file.path.split('/').last);
+      var result = await FlutterImageCompress.compressAndGetFile(
+        file.absolute.path, compressedpath,
+        quality: 25,
+      );
+      return result!;
   }
 }
