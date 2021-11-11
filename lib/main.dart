@@ -10,6 +10,7 @@ import 'package:weddingitinerary/core/themes/app_theme.dart';
 import 'logic/bloc/bookings_bloc/bookings_bloc.dart';
 import 'logic/bloc/event_bloc/event_bloc.dart';
 import 'logic/bloc/images_bloc/images_bloc.dart';
+import 'logic/bloc/livelink_bloc/livelink_bloc.dart';
 import 'logic/bloc/locations_bloc/locations_bloc.dart';
 import 'logic/bloc/mongodb_bloc/mongodb_bloc.dart';
 import 'logic/cubit/internet_bloc/internet_bloc.dart';
@@ -59,6 +60,11 @@ class weddingitinerary extends StatelessWidget {
         BlocProvider(
           create: (BuildContext context) =>
               LocationsBloc(BlocProvider.of<MongodbBloc>(context),BlocProvider.of<AuthenticationBloc>(context)),
+          lazy: false,
+        ),
+        BlocProvider(
+          create: (BuildContext context) =>
+              LivelinkBloc(BlocProvider.of<MongodbBloc>(context),BlocProvider.of<AuthenticationBloc>(context)),
           lazy: false,
         ),
         BlocProvider(

@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:weddingitinerary/logic/bloc/bottomnavbar_bloc/bottomnavbar_bloc.dart';
+import 'package:weddingitinerary/logic/bloc/livelink_bloc/livelink_bloc.dart';
 import 'package:weddingitinerary/presentation/contact_screen/contact_screen.dart';
 import 'package:weddingitinerary/presentation/home_screen/widgets/discover_page/shortcuts_card.dart';
 
@@ -38,11 +40,18 @@ class Shortcut_Card_Row extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 GestureDetector(
+                  child: Shortcuts_Card(iconData: Icons.voice_chat, title: 'LiveVideo'),
+                  onTap: () async {
+                    String x = BlocProvider.of<LivelinkBloc>(context).state.livelinks[0].link;// e.g. mailto:smith@example.org?subject=News&body=New%20plugin";
+                    await _makeUrl(x);
+                  },
+                ),
+                GestureDetector(
                   child: Shortcuts_Card(iconData: Icons.hotel, title: 'Hotel'),
                   onTap: () {
                     print("hotel");
                     BlocProvider.of<BottomnavbarBloc>(context)
-                        .add( Bottomnavbarsetindex(pageindex: 3));
+                        .add(Bottomnavbarsetindex(pageindex: 3));
                   },
                 ),
                 GestureDetector(
@@ -58,7 +67,10 @@ class Shortcut_Card_Row extends StatelessWidget {
                   child: Shortcuts_Card(
                       iconData: Icons.contact_support, title: 'Support'),
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Contact_Screen()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Contact_Screen()));
                   },
                 ),
               ],
@@ -67,5 +79,13 @@ class Shortcut_Card_Row extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _makeUrl(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

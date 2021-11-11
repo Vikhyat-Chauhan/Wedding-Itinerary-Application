@@ -1,5 +1,6 @@
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:weddingitinerary/core/constants/strings.dart';
+import 'package:weddingitinerary/data/models/livelink/livelink.dart';
 import 'package:weddingitinerary/data/models/user/user.dart';
 import 'package:weddingitinerary/data/models/event/event.dart';
 import 'package:weddingitinerary/data/models/bookings/bookings.dart';
@@ -9,6 +10,7 @@ part 'user_crud.dart';
 part 'event_crud.dart';
 part 'bookings_crud.dart';
 part 'locations_crud.dart';
+part 'livelink_crud.dart';
 
 abstract class MongoDatabase {
   static var db;

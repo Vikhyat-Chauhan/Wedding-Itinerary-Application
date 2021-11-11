@@ -75,6 +75,20 @@ class ImagesBloc extends Bloc<ImagesBlocEvent, ImagesBlocState> {
       startIndex: currentIndex,
     );
   }
+  /*
+  Future<List<XFile>> _fetcheventImages(
+      {required int currentIndex,
+        required int readmax,required String eventname}) async {
+    await gcloud.returnFilename('compressed'+eventname +'/').then((value) {
+      if (value.length <= state.images.length) {
+        emit(state.copyWith(hasReachedMax: true));
+      }
+    });
+    return await gcloud.readallSave(
+      readsize: currentIndex + readmax,
+      startIndex: currentIndex,
+    );
+  } */
 
   @override
   Future<void> close() {

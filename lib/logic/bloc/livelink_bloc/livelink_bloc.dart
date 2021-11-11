@@ -5,57 +5,55 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weddingitinerary/core/constants/strings.dart';
-import 'package:weddingitinerary/data/models/bookings/bookings.dart';
+import 'package:weddingitinerary/data/models/livelink/livelink.dart';
 import 'package:weddingitinerary/data/repositories/mongodb/mongodb_crud.dart';
 import 'package:weddingitinerary/logic/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/mongodb_bloc/mongodb_bloc.dart';
 
-part 'bookings_bloc_event.dart';
-part 'bookings_bloc_state.dart';
+part 'livelink_bloc_event.dart';
+part 'livelink_bloc_state.dart';
 
-class BookingsBloc extends Bloc<BookingsBlocEvent, BookingsBlocState> {
+class LivelinkBloc extends Bloc<LivelinkBlocEvent, LivelinkBlocState> {
   final MongodbBloc MongoDbBloc;
   final AuthenticationBloc authBloc ;
   late final StreamSubscription authBlocSubscription;
   late final StreamSubscription _mongodbBlocSubscription;
 
-  BookingsBloc(this.MongoDbBloc, this.authBloc) : super(const BookingsBlocState()) {
-    on<BookingsBlocEvent>(_bookingsEventHandler, transformer: droppable());
+  LivelinkBloc(this.MongoDbBloc, this.authBloc) : super(const LivelinkBlocState()) {
+    on<LivelinkBlocEvent>(_livelinksEventHandler, transformer: droppable());
     _mongodbBlocSubscription = MongoDbBloc.stream.listen((state) async {
       if (state.status == MongodbStatus.connected) {
-        emit(BookingsBlocState().copyWith(status: BookingsStatus.normal));
-        //emit(BookingsBlocState(status: BookingsStatus.working));
+        emit(LivelinkBlocState().copyWith(status: LivelinkStatus.normal));
       }
       else if(state.status == MongodbStatus.serviceunavailable) {
-        emit(BookingsBlocState().copyWith(status: BookingsStatus.serviceunavailable));
+        emit(LivelinkBlocState().copyWith(status: LivelinkStatus.serviceunavailable));
       }
     });
 
     authBlocSubscription = authBloc.stream.listen((state) async {
       if (state.status == AuthenticationStatus.authenticated) {
-        add(BookingsRefresh());
+        add(LivelinkRefresh());
       }
     });
   }
 
-  Future<void> _bookingsEventHandler(
-      BookingsBlocEvent event, Emitter<BookingsBlocState> emit) async {
+  Future<void> _livelinksEventHandler(
+      LivelinkBlocEvent event, Emitter<LivelinkBlocState> emit) async {
     if (await mongoDbWorking()) {
-      emit(state.copyWith(status: BookingsStatus.working));
+      emit(state.copyWith(status: LivelinkStatus.working));
       //EventRefresh Event
-      if (event is BookingsRefresh) {
+      if (event is LivelinkRefresh) {
         try {
-          List<Bookings> onlinebookings = await BookingsCrud.getmanybykey({"userid":Strings.ADMIN_USERID});
-          onlinebookings.sort((a, b) => a.location.compareTo(b.location)); //Arrange on locational basis
+          List<Livelink> onlinelivelinks = await LivelinkCrud.getmanybykey({"userid":Strings.ADMIN_USERID});
           emit(state.copyWith(
-              status: BookingsStatus.normal, events: onlinebookings));
+              status: LivelinkStatus.normal, livelinks: onlinelivelinks));
         } catch (_) {
           print(_);
-          emit(state.copyWith(status: BookingsStatus.undefined));
+          emit(state.copyWith(status: LivelinkStatus.undefined));
         }
       }
     } else {
-      emit(state.copyWith(status: BookingsStatus.serviceunavailable));
+      emit(state.copyWith(status: LivelinkStatus.serviceunavailable));
     }
   }
 

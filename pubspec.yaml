@@ -58,13 +58,9 @@ flutter:
   uses-material-design: true
   assets:
     - lib/core/constants/credentials.json
-    - lib/core/assets/images/background_image_1.jpeg
     - lib/core/assets/images/background_image_2.jpeg
-    - lib/core/assets/images/background_image_3.jpeg
     - lib/core/assets/images/background_image_4.jpeg
-    - lib/core/assets/images/background_image_6.jpeg
     - lib/core/assets/images/background_image_7.jpeg
-    - lib/core/assets/images/background_image_8.jpg
-    - lib/core/assets/iconimage/app_icon.jpeg
+    - lib/core/assets/images/background_image_8.jpeg
+    #- lib/core/assets/iconimage/app_icon.jpeg
     - lib/core/assets/images/Durgesh_Weds_Ritika.png
-    - lib/core/assets/bannerimages/contact.png

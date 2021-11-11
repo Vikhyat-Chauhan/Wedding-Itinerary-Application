@@ -24,7 +24,7 @@ class _LaunchScreenState extends State<LaunchScreen> with WidgetsBindingObserver
     'lib/core/assets/images/background_image_2.jpeg',
     'lib/core/assets/images/background_image_4.jpeg',
     'lib/core/assets/images/background_image_7.jpeg',
-    'lib/core/assets/images/background_image_8.jpg'
+    'lib/core/assets/images/background_image_8.jpeg'
   ];
 
   late final InternetBloc _internetBloc;

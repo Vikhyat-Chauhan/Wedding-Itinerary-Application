@@ -8,6 +8,7 @@ import 'package:weddingitinerary/logic/bloc/bookings_bloc/bookings_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/bottomnavbar_bloc/bottomnavbar_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/event_bloc/event_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/images_bloc/images_bloc.dart';
+import 'package:weddingitinerary/logic/bloc/livelink_bloc/livelink_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/locations_bloc/locations_bloc.dart';
 import 'package:weddingitinerary/logic/bloc/mongodb_bloc/mongodb_bloc.dart';
 import 'package:weddingitinerary/logic/cubit/internet_bloc/internet_bloc.dart';
@@ -37,7 +38,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   var mongodbautoconnectTimer,
       eventrefreshTimer,
       bookingrefreshTimer,
-      locationrefreshTimer;
+      locationrefreshTimer,
+      livelinkrefreshTimer;
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
@@ -148,9 +150,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     });
 
     locationrefreshTimer = Timer.periodic(thirtySec, (Timer t) {
-      var state = BlocProvider.of<LocationsBloc>(context).state.status;
+      var state = BlocProvider
+          .of<LocationsBloc>(context)
+          .state
+          .status;
       if ((state == LocationsStatus.normal)) {
         BlocProvider.of<LocationsBloc>(context).add(LocationsRefresh());
+      }
+    });
+
+    livelinkrefreshTimer = Timer.periodic(thirtySec, (Timer t) {
+      var state = BlocProvider.of<LivelinkBloc>(context).state.status;
+      if ((state == LivelinkStatus.normal)) {
+        BlocProvider.of<LivelinkBloc>(context).add(LivelinkRefresh());
       }
     });
 
@@ -192,12 +204,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           BlocProvider.of<LocationsBloc>(context).add(LocationsRefresh());
         }
       });
+      livelinkrefreshTimer = Timer.periodic(thirtySec, (Timer t) {
+        var state = BlocProvider.of<LivelinkBloc>(context).state.status;
+        if ((state == LivelinkStatus.normal)) {
+          BlocProvider.of<LivelinkBloc>(context).add(LivelinkRefresh());
+        }
+      });
     } else if (state == AppLifecycleState.inactive) {
     } else if (state == AppLifecycleState.paused) { print("Pasued State");
       mongodbautoconnectTimer.cancel();
       eventrefreshTimer.cancel();
       bookingrefreshTimer.cancel();
       locationrefreshTimer.cancel();
+      livelinkrefreshTimer.cancel();
     }
   }
 
