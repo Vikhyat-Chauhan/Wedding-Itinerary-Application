@@ -25,91 +25,98 @@ class Images_Page extends StatefulWidget {
 }
 
 class _Images_PageState extends State<Images_Page> {
-  late final ImagesBloc imagesBloc;
-  late final StreamSubscription ImagesBlocSubscription;
-  final List<XFile> _items = [];
-  bool isLoading = false;
-  int pageCount = 1;
   late ScrollController _scrollController;
   bool viewingimage = false;
   late XFile viewingimagefile;
   bool permissionGranted = false;
+  //event view related variables
+  int eventindex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ImagesBloc, ImagesBlocState>(
-      listener: (context, state) {
-        if (state.hasReachedMax == true) {
-          setState(() {
-            isLoading = false;
-          });
-        }
-      },
-      child: Column(
-        children: [
-          Top_Bar(
-            pagename: 'Images',
-          ),
-          const SizedBox(height: 40),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-            child: Container(
-              alignment: Alignment.topLeft,
-              child: const Text(
-                "Upload Images & Videos",
-                style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w300,
-                    fontFamily: 'Arial narrow'),
-              ),
+    return Column(
+      children: [
+        Top_Bar(
+          pagename: 'Images',
+        ),
+        //const SizedBox(height: 40),
+        const SizedBox(height: 40),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+          child: Container(
+            alignment: Alignment.topLeft,
+            child: Text(
+              (BlocProvider.of<EventBloc>(context)
+                      .state
+                      .events[eventindex]
+                      .name) +
+                  " Images",
+              style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w300,
+                  fontFamily: 'Arial narrow'),
             ),
           ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  for (int i = 0;
-                      i <
-                          BlocProvider.of<EventBloc>(context)
-                              .state
-                              .events
-                              .length;
-                      i++)
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          _showDialog(BlocProvider.of<EventBloc>(context)
-                                  .state
-                                  .events[i]
-                                  .name +
-                              '/');
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Text(
-                              BlocProvider.of<EventBloc>(context)
-                                  .state
-                                  .events[i]
-                                  .name,
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.normal)),
-                        ),
+        ),
+        const SizedBox(height: 20),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (int i = 0;
+                    i < BlocProvider.of<EventBloc>(context).state.events.length;
+                    i++)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        String eventdirectory = 'compressed' +
+                            (BlocProvider.of<EventBloc>(context)
+                                .state
+                                .events[i]
+                                .name) +
+                            '/';
+                        BlocProvider.of<ImagesBloc>(context).add(
+                            ImageFetch(directory: eventdirectory, readmax: 12));
+                        setState(() {
+                          eventindex = i;
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text(
+                            BlocProvider.of<EventBloc>(context)
+                                .state
+                                .events[i]
+                                .name,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.normal)),
                       ),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
           ),
-          const SizedBox(height: 20),
-          (!viewingimage)
-              ? Expanded(
-                  child: Stack(
+        ),
+        const SizedBox(height: 20),
+        (!viewingimage)
+            ? Expanded(
+                child: BlocBuilder<ImagesBloc, ImagesBlocState>(
+                    builder: (context, state) {
+                  if (state.hasReachedMax == false) {
+                    if (state.images.length > 12) {
+                      if (_scrollController.hasClients) {
+                        if (state.status == ImagesStatus.success)
+                          _scrollController.jumpTo(
+                              _scrollController.position.maxScrollExtent + 400);
+                      }
+                    }
+                  }
+                  return Stack(
                     children: [
                       GridView.builder(
                         gridDelegate:
@@ -118,7 +125,7 @@ class _Images_PageState extends State<Images_Page> {
                           mainAxisSpacing: 2,
                           crossAxisCount: 3,
                         ),
-                        itemCount: _items.length,
+                        itemCount: state.images.length,
                         controller: _scrollController,
                         scrollDirection: Axis.vertical,
                         shrinkWrap: true,
@@ -127,62 +134,79 @@ class _Images_PageState extends State<Images_Page> {
                             onTap: () {
                               setState(() {
                                 viewingimage = true;
-                                viewingimagefile = _items[index];
+                                viewingimagefile = state.images[index];
                               });
                             },
                             child: PostListItem(
-                              image: _items[index],
+                              image: state.images[index],
                             ),
                           );
                         },
                       ),
-                      if (isLoading) BottomLoader(),
+                      if (state.status == ImagesStatus.loading) BottomLoader(),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 20, 10),
+                          child: FloatingActionButton(
+                            onPressed: () {
+                              _showDialog(BlocProvider.of<EventBloc>(context)
+                                      .state
+                                      .events[eventindex]
+                                      .name +
+                                  '/');
+                            },
+                            child: const Icon(Icons.file_upload_outlined),
+                            tooltip: 'Upload',
+                          ),
+                        ),
+                      ),
                     ],
+                  );
+                }),
+              )
+            : Expanded(
+                child: Stack(children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      child: Image.memory(
+                          File(viewingimagefile.path).readAsBytesSync()),
+                    ),
                   ),
-                )
-              : Expanded(
-                  child: Stack(children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        child: Image.memory(
-                            File(viewingimagefile.path).readAsBytesSync()),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: FloatingActionButton(
+                        onPressed: () {
+                          setState(() {
+                            viewingimage = false;
+                          });
+                        },
+                        child: const Icon(Icons.arrow_back),
+                        tooltip: 'BACK',
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: FloatingActionButton(
-                          onPressed: () {
-                            setState(() {
-                              viewingimage = false;
-                            });
-                          },
-                          child: const Icon(Icons.arrow_back),
-                          tooltip: 'BACK',
-                        ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: FloatingActionButton(
+                        onPressed: () async {
+                          await _writeToDownloads(
+                              File(viewingimagefile.path).readAsBytesSync(),
+                              viewingimagefile.path);
+                        },
+                        child: const Icon(Icons.download),
+                        tooltip: 'Download',
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: FloatingActionButton(
-                          onPressed: () async {
-                            await _writeToDownloads(
-                                File(viewingimagefile.path).readAsBytesSync(),
-                                viewingimagefile.path);
-                          },
-                          child: const Icon(Icons.download),
-                          tooltip: 'Download',
-                        ),
-                      ),
-                    ),
-                  ]),
-                ),
-        ],
-      ),
+                  ),
+                ]),
+              ),
+      ],
     );
   }
 
@@ -230,7 +254,7 @@ class _Images_PageState extends State<Images_Page> {
     await gcloud.spawnclient();
     await ImagePicker().pickMultiImage().then((images) async {
       if (images != null) {
-        if(images.length <= 30) {
+        if (images.length <= 30) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               duration: Duration(milliseconds: 400),
@@ -248,8 +272,7 @@ class _Images_PageState extends State<Images_Page> {
                 );
               });
             });
-          }
-          catch (_) {
+          } catch (_) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 duration: Duration(milliseconds: 800),
@@ -257,8 +280,7 @@ class _Images_PageState extends State<Images_Page> {
               ),
             );
           }
-        }
-        else{
+        } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               duration: Duration(milliseconds: 800),
@@ -275,7 +297,9 @@ class _Images_PageState extends State<Images_Page> {
     await gcloud.spawnclient();
     List<XFile> videolist = [];
     await ImagePicker()
-        .pickVideo(source: ImageSource.gallery,)
+        .pickVideo(
+      source: ImageSource.gallery,
+    )
         .then((video) async {
       videolist.add(video!);
       if (videolist != null) {
@@ -296,8 +320,7 @@ class _Images_PageState extends State<Images_Page> {
               );
             });
           });
-        }
-        catch(_){
+        } catch (_) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               duration: Duration(milliseconds: 800),
@@ -314,16 +337,15 @@ class _Images_PageState extends State<Images_Page> {
     if (_scrollController.offset >=
             _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
-      if (!imagesBloc.state.hasReachedMax) {
+      if (!BlocProvider.of<ImagesBloc>(context).state.hasReachedMax) {
+        String eventdirectory = 'compressed' +
+            (BlocProvider.of<EventBloc>(context)
+                .state
+                .events[eventindex]
+                .name) +
+            '/';
         BlocProvider.of<ImagesBloc>(context)
-            .add(const ImageFetch(directory: 'Wedding Ceremony/', readmax: 12));
-        setState(() {
-          isLoading = true;
-        });
-      } else {
-        setState(() {
-          isLoading = false;
-        });
+            .add(ImageFetch(directory: eventdirectory, readmax: 12));
       }
     }
   }
@@ -341,42 +363,22 @@ class _Images_PageState extends State<Images_Page> {
   @override
   void initState() {
     super.initState();
-
     BackButtonInterceptor.add(backInterceptor);
     _scrollController = ScrollController(initialScrollOffset: 5.0)
       ..addListener(_scrollListener);
-    imagesBloc = BlocProvider.of<ImagesBloc>(context);
-    ImagesBlocSubscription = imagesBloc.stream.listen((state) {
-      if (!state.hasReachedMax) {
-        if (isLoading) {
-          if (_items.isEmpty) {
-            _items.addAll(state.images);
-          } else {
-            state.images.forEach((element) {
-              if (!_items.contains(element)) {
-                _items.add(element);
-              }
-            });
-          }
-          setState(() {
-            isLoading = false;
-          });
-        }
-      }
-    });
     ////LOADING FIRST  DATA
+    String eventdirectory = 'compressed' +
+        (BlocProvider.of<EventBloc>(context).state.events[eventindex].name) +
+        '/';
     if (BlocProvider.of<ImagesBloc>(context).state.images.isEmpty) {
       BlocProvider.of<ImagesBloc>(context)
-          .add(const ImageFetch(directory: 'Wedding Ceremony/', readmax: 12));
-    } else {
-      _items.addAll(BlocProvider.of<ImagesBloc>(context).state.images);
+          .add(ImageFetch(directory: eventdirectory, readmax: 12));
     }
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
-    ImagesBlocSubscription.cancel();
     BackButtonInterceptor.remove(backInterceptor);
     super.dispose();
   }
@@ -388,7 +390,11 @@ class _Images_PageState extends State<Images_Page> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          content: const Text("What do you want to Upload?",textAlign: TextAlign.center, style: TextStyle(fontSize: 18),),
+          content: const Text(
+            "What do you want to Upload?",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18),
+          ),
           contentPadding: const EdgeInsets.fromLTRB(5, 20, 5, 0),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
@@ -400,16 +406,15 @@ class _Images_PageState extends State<Images_Page> {
                       height: 60,
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(5,0,0,0),
+                      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                       child: ElevatedButton(
-                        onPressed: () async{
+                        onPressed: () async {
                           await _uploadImages(path);
                           Navigator.of(context).pop();
                         },
-                        child:  const Padding(
+                        child: const Padding(
                           padding: EdgeInsets.all(5.0),
-                          child: Text(
-                              "Images",
+                          child: Text("Images",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 20,
@@ -419,16 +424,15 @@ class _Images_PageState extends State<Images_Page> {
                     ),
                     Spacer(),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(0,0,5,0),
+                      padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                       child: ElevatedButton(
-                        onPressed: () async{
+                        onPressed: () async {
                           await _uploadVideo(path);
                           Navigator.of(context).pop();
                         },
-                        child:  const Padding(
+                        child: const Padding(
                           padding: EdgeInsets.all(5.0),
-                          child: Text(
-                              "Video",
+                          child: Text("Video",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 20,

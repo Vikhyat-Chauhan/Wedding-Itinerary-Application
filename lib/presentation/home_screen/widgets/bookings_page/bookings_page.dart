@@ -100,13 +100,18 @@ class _Bookings_PageState extends State<Bookings_Page> {
                                       .bookings
                                       .length;
                               i++) {
-                            if (textfielddata.toLowerCase() ==
+                            /*if (textfielddata.toLowerCase() ==
                                 BlocProvider.of<BookingsBloc>(context)
                                     .state
                                     .bookings[i]
                                     .name
                                     .substring(0, textfielddata.length)
-                                    .toLowerCase()) {
+                                    .toLowerCase()) */
+                              if (BlocProvider.of<BookingsBloc>(context)
+                                      .state
+                                      .bookings[i]
+                                      .name
+                                      .toLowerCase().contains(textfielddata.toLowerCase())){
                               bookingscopy.add(
                                   BlocProvider.of<BookingsBloc>(context)
                                       .state

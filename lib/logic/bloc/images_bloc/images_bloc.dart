@@ -37,31 +37,44 @@ class ImagesBloc extends Bloc<ImagesBlocEvent, ImagesBlocState> {
     if (event is ImageBlocInitial) {
       await gcloud.spawnclient();
     } else if (event is ImageFetch) {
+
+      if(state.directory != event.directory){
+        emit(state.copyWith(
+          status: ImagesStatus.loading,
+          hasReachedMax: false,
+          directory: event.directory,
+          images: [],
+        ));
+      }
       if (state.status == ImagesStatus.initial) {
+        emit(state.copyWith(status: ImagesStatus.loading));
         await _fetchImages(
-                currentIndex: 0, readmax: 12,)
+                currentIndex: 0, readmax: 12,directory: event.directory)
             .then((value) {
           emit(state.copyWith(
             status: ImagesStatus.success,
+            directory: event.directory,
             images: value,
           ));
         });
       } else {
+        emit(state.copyWith(status: ImagesStatus.loading));
         await _fetchImages(
                 currentIndex: state.images.length,
-                readmax: event.readmax,)
+                readmax: event.readmax,directory: event.directory)
             .then((value) {
           List<XFile> imagelist = value;
-          imagelist.addAll(state.images);
+          state.images.addAll(imagelist);
           emit(state.copyWith(
             status: ImagesStatus.success,
-            images: imagelist,
+            directory: event.directory,
+            images: state.images,
           ));
         });
       }
     }
   }
-
+  /* original
   Future<List<XFile>> _fetchImages(
       {required int currentIndex,
       required int readmax,}) async {
@@ -74,21 +87,23 @@ class ImagesBloc extends Bloc<ImagesBlocEvent, ImagesBlocState> {
       readsize: currentIndex + readmax,
       startIndex: currentIndex,
     );
-  }
-  /*
-  Future<List<XFile>> _fetcheventImages(
+  } */
+
+
+  Future<List<XFile>> _fetchImages(
       {required int currentIndex,
-        required int readmax,required String eventname}) async {
-    await gcloud.returnFilename('compressed'+eventname +'/').then((value) {
+      required int readmax,required directory}) async {
+    await gcloud.returnFilename(directory).then((value) {
       if (value.length <= state.images.length) {
         emit(state.copyWith(hasReachedMax: true));
       }
     });
-    return await gcloud.readallSave(
+    return await gcloud.readSave(
       readsize: currentIndex + readmax,
       startIndex: currentIndex,
+      directory: directory,
     );
-  } */
+  }
 
   @override
   Future<void> close() {

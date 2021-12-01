@@ -15,19 +15,20 @@ part 'bookings_bloc_state.dart';
 
 class BookingsBloc extends Bloc<BookingsBlocEvent, BookingsBlocState> {
   final MongodbBloc MongoDbBloc;
-  final AuthenticationBloc authBloc ;
+  final AuthenticationBloc authBloc;
   late final StreamSubscription authBlocSubscription;
   late final StreamSubscription _mongodbBlocSubscription;
 
-  BookingsBloc(this.MongoDbBloc, this.authBloc) : super(const BookingsBlocState()) {
+  BookingsBloc(this.MongoDbBloc, this.authBloc)
+      : super(const BookingsBlocState()) {
     on<BookingsBlocEvent>(_bookingsEventHandler, transformer: droppable());
     _mongodbBlocSubscription = MongoDbBloc.stream.listen((state) async {
       if (state.status == MongodbStatus.connected) {
         emit(BookingsBlocState().copyWith(status: BookingsStatus.normal));
         //emit(BookingsBlocState(status: BookingsStatus.working));
-      }
-      else if(state.status == MongodbStatus.serviceunavailable) {
-        emit(BookingsBlocState().copyWith(status: BookingsStatus.serviceunavailable));
+      } else if (state.status == MongodbStatus.serviceunavailable) {
+        emit(BookingsBlocState()
+            .copyWith(status: BookingsStatus.serviceunavailable));
       }
     });
 
@@ -45,8 +46,17 @@ class BookingsBloc extends Bloc<BookingsBlocEvent, BookingsBlocState> {
       //EventRefresh Event
       if (event is BookingsRefresh) {
         try {
-          List<Bookings> onlinebookings = await BookingsCrud.getmanybykey({"userid":Strings.ADMIN_USERID});
-          onlinebookings.sort((a, b) => a.location.compareTo(b.location)); //Arrange on locational basis
+          List<Bookings> onlinebookings =
+              await BookingsCrud.getmanybykey({"userid": Strings.ADMIN_USERID});
+          onlinebookings.sort((a, b) {
+            if (a.location == b.location) {
+              return a.roomNo.compareTo(b.roomNo);
+            }
+            else{
+              return -1;
+            }
+          }); //Arrange on locational basis
+          //onlinebookings.sort((a, b) => a.location.compareTo(b.location)); //Arrange on locational basis
           emit(state.copyWith(
               status: BookingsStatus.normal, events: onlinebookings));
         } catch (_) {

@@ -9,6 +9,7 @@ import 'package:gcloud/storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:weddingitinerary/core/constants/strings.dart';
 
 class GcloudApi {
   var _credentials;
@@ -36,7 +37,7 @@ class GcloudApi {
 
     // Instantiate objects to cloud storage
     var storage = Storage(_client, 'Image Upload Google Storage');
-    var bucket = storage.bucket('ritikawedding');
+    var bucket = storage.bucket(Strings.BUCKETNAME);
 
     // Save to bucket
     final timestamp = DateTime.now().millisecondsSinceEpoch;
@@ -92,7 +93,7 @@ class GcloudApi {
           await auth.clientViaServiceAccount(_credentials, Storage.SCOPES);
     // Instantiate objects to cloud storage
     var storage = Storage(_client, 'Image Upload Google Storage');
-    var bucket = storage.bucket('ritikawedding');
+    var bucket = storage.bucket(Strings.BUCKETNAME);
     Page<BucketEntry> page =
         await bucket.page(prefix: directory, pageSize: size);
     return page;
@@ -109,7 +110,7 @@ class GcloudApi {
     List<String> filename = [];
     // Instantiate objects to cloud storage
     var storage = Storage(_client, 'Image Upload Google Storage');
-    var bucket = storage.bucket('ritikawedding');
+    var bucket = storage.bucket(Strings.BUCKETNAME);
     Stream<BucketEntry> stream = bucket.list(prefix: directory);
     await for (var event in stream) {
       if (event.name != directory) {
@@ -132,7 +133,7 @@ class GcloudApi {
     List<String> filename = [];
     // Instantiate objects to cloud storage
     var storage = Storage(_client, 'Image Upload Google Storage');
-    var bucket = storage.bucket('ritikawedding');
+    var bucket = storage.bucket(Strings.BUCKETNAME);
     List<String> filenames = [];
     await returnFoldernames().then((value) async {
       for (int i = 0; i < value.length; i++) {
@@ -143,7 +144,7 @@ class GcloudApi {
           }
         });
       }
-    }); print(filenames);
+    }); //print(filenames);
     return filenames;
   }
 
@@ -154,7 +155,7 @@ class GcloudApi {
     List<String> foldername = [];
     // Instantiate objects to cloud storage
     var storage = Storage(_client, 'Image Upload Google Storage');
-    var bucket = storage.bucket('ritikawedding');
+    var bucket = storage.bucket(Strings.BUCKETNAME);
     Stream<BucketEntry> stream = bucket.list(prefix: '');
     await for (var event in stream) {
       if (!event.isObject){ // filter to only allow folders
@@ -174,7 +175,7 @@ class GcloudApi {
           await auth.clientViaServiceAccount(_credentials, Storage.SCOPES);
     // Instantiate objects to cloud storage
     var storage = Storage(_client, 'Image Upload Google Storage');
-    var bucket = storage.bucket('ritikawedding');
+    var bucket = storage.bucket(Strings.BUCKETNAME);
     final bytesBuilder = BytesBuilder();
     var stream = bucket.read(webpath);
     await for (var event in stream) {
@@ -191,7 +192,7 @@ class GcloudApi {
   }) async {
     //print(startIndex);
     //print(readsize);
-    List<String> filename = await returnFilename(directory);
+    List<String> filename = await returnFilename(directory); //print(filename);
     List<XFile> files = [];
     for (int i = startIndex; i < (readsize); i++) {
       if (i < filename.length) {

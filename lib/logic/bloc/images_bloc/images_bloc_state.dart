@@ -2,6 +2,7 @@ part of 'images_bloc.dart';
 
 enum ImagesStatus {
   initial,
+  loading,
   success,
   serviceunavailable,
 }
@@ -35,7 +36,7 @@ class ImagesBlocState extends Equatable {
 
   @override
   String toString() {
-    return '''MongodbBlocState { status: $status, directory: $directory, hasReachedMax: $hasReachedMax, images: ${images} }''';
+    return '''ImagesBlocState { status: $status, directory: $directory, hasReachedMax: $hasReachedMax, images: ${images} }''';
   }
 
   @override
